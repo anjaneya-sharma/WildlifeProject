@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
 
-const path_to_images = 'http://localhost:5000/image/';
+const path_to_images = 'http://127.0.0.1:8000/image/';
 const logoPath       = '/assets/static/AIWilD.jpg';
 const iiitdLogoPath  = '/assets/static/iiitd logo.png';
 const wiiLogoPath    = '/assets/static/WII Logo.jpeg';
@@ -11,37 +11,34 @@ const ntcaLogoPath   = '/assets/static/NTCA logo.png';
 function App() {
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [columnImages, setColumnImages] = useState([[], [], [], [], []]); // 5 columns by default
+  const [columnImages, setColumnImages] = useState([[], [], [], [], []]); // 5 cols
 
   useEffect(() => {
-    axios.get('http://localhost:5000/images')
+    axios.get('http://127.0.0.1:8000/images')
       .then(response => {
         const loadedImages = response.data.images;
         setImages(loadedImages);
-        distributeImages(loadedImages); // Distribute images into columns when fetched
+        distributeImages(loadedImages); // separate images into columns when fetched
       })
       .catch(error => {
         console.error('Error fetching images:', error);
       });
   }, []);
 
-  // Function to distribute images based on their natural height to balance the columns
+  // aahhhhhhhh
   const distributeImages = (imageList) => {
-    const columns = Array.from({ length: 5 }, () => ({ height: 0, images: [] })); // 5 columns
+    const columns = Array.from({ length: 5 }, () => ({ height: 0, images: [] })); // 5 cols
 
     imageList.forEach(image => {
       const img = new Image();
       img.src = `${path_to_images}${image}`;
 
       img.onload = () => {
-        // Find the column with the least total height
         const minHeightColumn = columns.reduce((prev, curr) => prev.height < curr.height ? prev : curr);
-
-        // Add the image to that column and update the total height
+        // greedy
         minHeightColumn.images.push(image);
         minHeightColumn.height += img.height;
         
-        // Update the state for that column
         setColumnImages(columns.map(col => col.images));
       };
     });

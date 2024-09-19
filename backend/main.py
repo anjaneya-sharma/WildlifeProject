@@ -16,12 +16,12 @@ app.add_middleware(
 )
 
 
-IMAGE_DIR = r'C:\Users\ameyd\Desktop\IIITD\SEM 7\btp\my_project\frontend\public\assets\wildlife_images'
+IMAGE_DIR = r'C:/Users/ameyd/Desktop/IIITD/SEM 7/btp/my_project/frontend/public/assets/wildlife_images'
 
 class ImageResponse(BaseModel):
     images: List[str]
 
-@app.get('/images', response_model=ImageResponse)
+@app.get('/images/', response_model=ImageResponse)
 async def list_images():
     try:
         files = [f for f in os.listdir(IMAGE_DIR) if os.path.isfile(os.path.join(IMAGE_DIR, f))]

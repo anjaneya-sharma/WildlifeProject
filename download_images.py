@@ -1,7 +1,7 @@
 import requests
 import os
 
-api_key = 'QNckYJVhmc8HKXfLg0Hng1vA7u5KWFCNUlVRt4dTRCk'  # Remove before committing to production
+api_key = ''  # Remove before committing to production
 dir_images = r'C:\Users\ameyd\Desktop\IIITD\SEM 7\btp\my_project\frontend\public\assets\wildlife_images'
 num_images = 30  # Unsplash limits to 30
 
