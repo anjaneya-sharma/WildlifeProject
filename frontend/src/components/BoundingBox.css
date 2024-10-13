@@ -1,32 +1,61 @@
-/* Bounding box styles */
+/* BoundingBox.css */
+.bounding-box-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 .bounding-box {
     position: absolute;
-    border: 2px solid #39ff14;
-    /* Green border for the bounding box */
-    box-sizing: border-box;
+    border: 2px solid #00ff00;
     cursor: move;
-    /* Allows the user to move the bounding box */
-    transition: all 0.2s ease-in-out;
-    /* Smooth transition when resizing */
+    min-width: 100px;
+    min-height: 30px;
 }
 
-/* Resizer styles */
-.resizer {
+.category-input {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    top: 5px;
+    left: 5px;
+    background: transparent;
+    border: none;
+    padding: 2px;
+    color: #00ff00;
+    font-weight: bold;
+    min-width: 90px;
+    outline: none;
+}
+
+.resize-handle {
+    position: absolute;
     width: 10px;
     height: 10px;
-    background-color: #39ff14;
-    /* Green square resizer */
-    cursor: se-resize;
-    /* Cursor style indicating resize action */
-    border-radius: 50%;
-    /* Circular shape for the resizer */
+    background-color: transparent;
+    border: none;
+    pointer-events: auto;
+    cursor: pointer;
 }
 
-/* Optional: Resizer hover effect */
-.resizer:hover {
-    background-color: #ff9900;
-    /* Change color when hovered */
+.resize-handle.nw {
+    top: -5px;
+    left: -5px;
+    cursor: nwse-resize;
+}
+
+.resize-handle.ne {
+    top: -5px;
+    right: -5px;
+    cursor: nesw-resize;
+}
+
+.resize-handle.sw {
+    bottom: -5px;
+    left: -5px;
+    cursor: nesw-resize;
+}
+
+.resize-handle.se {
+    bottom: -5px;
+    right: -5px;
+    cursor: nwse-resize;
 }

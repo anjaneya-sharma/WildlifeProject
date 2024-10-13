@@ -3,33 +3,24 @@
     display: flex;
     justify-content: space-between;
     gap: 2px;
-    /* space between columns */
     padding: 0 10px;
-    /* horizontal padding */
 }
 
 .collage-column {
     flex: 1;
-    /* distribute available space equally */
     display: flex;
     flex-direction: column;
     gap: 2px;
-    /* space between images in each column */
 }
 
 .collage-image {
     width: 100%;
-    /* ensure the image fills the available width */
     height: auto;
-    /* maintain the aspect ratio */
     object-fit: cover;
-    /* ensure the image covers the space without stretching */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .collage-image:hover {
     transform: scale(1.05);
-    /* slight zoom effect on hover */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    /* add shadow for hover effect */
 }
