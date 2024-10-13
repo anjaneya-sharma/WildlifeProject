@@ -1,108 +1,67 @@
-import React, { useEffect, useState } from 'react';
+// App.js
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
+import Collage from './components/Collage';
+import Modal from './components/Modal';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 const path_to_images = 'http://127.0.0.1:8000/image/';
-const logoPath       = '/assets/static/AIWilD.jpg';
-const iiitdLogoPath  = '/assets/static/iiitd logo.png';
-const wiiLogoPath    = '/assets/static/WII Logo.jpeg';
-const ntcaLogoPath   = '/assets/static/NTCA logo.png';
 
 function App() {
-  const [images, setImages] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [columnImages, setColumnImages] = useState([[], [], [], [], []]); // 5 cols
+  const [images, set_images] = useState([]);
+  const [selected_image, set_selected_image] = useState(null);
+  const [column_images, set_column_images] = useState([[], [], [], [], []]);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/images')
       .then(response => {
-        const loadedImages = response.data.images;
-        setImages(loadedImages);
-        distributeImages(loadedImages); // separate images into columns when fetched
+        const loaded_images = response.data.images;
+        set_images(loaded_images);
+        distribute_images(loaded_images);
       })
       .catch(error => {
-        console.error('Error fetching images:', error);
+        console.error('error fetching images:', error);
       });
   }, []);
 
-  // aahhhhhhhh
-  const distributeImages = (imageList) => {
-    const columns = Array.from({ length: 5 }, () => ({ height: 0, images: [] })); // 5 cols
-
-    imageList.forEach(image => {
+  const distribute_images = (image_list) => {
+    const columns = Array.from({ length: 5 }, () => ({ height: 0, images: [] }));
+    image_list.forEach(image => {
       const img = new Image();
       img.src = `${path_to_images}${image}`;
-
       img.onload = () => {
-        const minHeightColumn = columns.reduce((prev, curr) => prev.height < curr.height ? prev : curr);
-        // greedy
-        minHeightColumn.images.push(image);
-        minHeightColumn.height += img.height;
-        
-        setColumnImages(columns.map(col => col.images));
+        const min_height_column = columns.reduce((prev, curr) => prev.height < curr.height ? prev : curr);
+        min_height_column.images.push(image);
+        min_height_column.height += img.height;
+        set_column_images(columns.map(col => col.images));
       };
     });
   };
 
-  const handleImageClick = (image) => {
-    setSelectedImage(image);
+  const handle_image_click = (image) => {
+    set_selected_image(image);
   };
 
-  const handleCloseModal = () => {
-    setSelectedImage(null);
+  const handle_close_modal = () => {
+    set_selected_image(null);
   };
 
   return (
     <div className="App">
-      <header className="App-header">
-        <div className="top-bar">
-          <img src={logoPath} alt="AIWilD Logo" className="logo" />
-          <nav className="nav-links">
-            <a href="#" className="nav-link">Home</a>
-            <a href="#" className="nav-link">Team</a>
-            <a href="#" className="nav-link">Contact Us</a>
-          </nav>
-          <div className="logo-group">
-            <img src={ntcaLogoPath} alt="NTCA Logo" className="small-logo" />
-            <img src={wiiLogoPath} alt="WII Logo" className="small-logo" />
-            <img src={iiitdLogoPath} alt="IIITD Logo" className="small-logo" />
-          </div>
-        </div>
-      </header>
+      <Header />
       <main>
-        <div className="collage">
-          {columnImages.map((column, columnIndex) => (
-            <div key={columnIndex} className="collage-column">
-              {column.map(image => (
-                <img
-                  key={image}
-                  src={`${path_to_images}${image}`}
-                  alt={image}
-                  className="collage-image"
-                  onClick={() => handleImageClick(image)}
-                  loading="lazy"
-                />
-              ))}
-            </div>
-          ))}
-        </div>
-        {selectedImage && (
-          <div className="modal" onClick={handleCloseModal}>
-            <div className="modal-content" onClick={e => e.stopPropagation()}>
-              <span className="close" onClick={handleCloseModal}>&times;</span>
-              <img
-                src={`${path_to_images}${selectedImage}`}
-                alt={selectedImage}
-                className="modal-image"
-                loading="lazy"
-              />
-            </div>
-          </div>
+        <Collage column_images={column_images} handle_image_click={handle_image_click} />
+        {selected_image && (
+          <Modal
+            selected_image={selected_image}
+            path_to_images={path_to_images}
+            handle_close_modal={handle_close_modal}
+          />
         )}
       </main>
-      <footer className="App-footer">
-        <p>&copy; 2024 Ameya Kumar</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

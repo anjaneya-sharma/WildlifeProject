@@ -16,10 +16,14 @@ app.add_middleware(
 )
 
 
-IMAGE_DIR = r'C:/Users/ameyd/Desktop/IIITD/SEM 7/btp/my_project/frontend/public/assets/wildlife_images'
+IMAGE_DIR = r'C:\Users\ameyd\Desktop\IIITD\SEM 7\btp\my_project\frontend\src\assets\wildlife_images'
 
 class ImageResponse(BaseModel):
     images: List[str]
+
+@app.get('/')
+async def read_root():
+    return {"message": "Welcome to the FastAPI server!"}
 
 @app.get('/images/', response_model=ImageResponse)
 async def list_images():

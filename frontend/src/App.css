@@ -3,8 +3,8 @@ html, body {
   height: 100%;
   margin: 0;
   font-family: 'Arial', sans-serif;
-  background-color: #f5f5f5; /* light mode */
-  color: #333;               /* dark text */
+  background-color: #f5f5f5;
+  color: #333;
 }
 
 .App {
@@ -12,71 +12,6 @@ html, body {
   flex-direction: column;
   min-height: 100vh;
   text-align: center;
-}
-
-.App-header {
-  background-color: #fff;        /* background for header */
-  padding: 20px;
-  color: #333;
-  border-bottom: 1px solid #ddd; /* border for separation */
-}
-
-.App-header h1 {
-  margin: 0;
-  font-size: 2.5rem;
-  font-weight: bold;
-}
-
-.App-header p {
-  font-size: 1.2rem;
-  font-weight: 300;
-}
-
-.top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;  /* space out elements */
-  padding: 10px 20px;
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-}
-
-.top-bar .logo {
-  height: 50px;
-}
-
-.top-bar .nav-links {
-  display: flex;
-  gap: 20px;
-  margin-left: 30px;
-  margin-right: auto;              /* move to the right of logo */
-}
-
-.top-bar .nav-link {
-  text-decoration: none;
-  color: #333;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: transform 0.3s ease; /* pop-out effect */
-}
-
-.top-bar .nav-link:hover {
-  color: #007bff;
-  transform: translateY(-5px);     /* move out of screen on hover */
-}
-
-.top-bar .logo-group {
-  display: flex;
-  gap: 10px;                       /* space between logos */
-}
-
-.top-bar .logo-group img {
-  height: 40px;
-  transition: transform 0.3s ease; /* pop-out effect */
-}
-
-.top-bar .logo-group img:hover {
-  transform: translateY(-10px);    /* move out of screen on hover */
 }
 
 main {
@@ -102,80 +37,25 @@ main {
 .collage {
   display: flex;
   justify-content: space-between;
-  gap: 2px;          /* horizontal gap between columns */
-  padding: 0 10px;   /* padding on the sides */
+  gap: 2px;
+  padding: 0 10px;
 }
 
 .collage-column {
-  flex: 1;           /* column takes equal space */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;          /* vertical gap between images in the same column */
+  gap: 2px;
 }
 
 .collage-image {
-  width: 100%;       /* images fill the column width */
-  height: auto;      /* maintain aspect ratio */
-  object-fit: cover; /* images cover the container without distortion */
-  border-radius: 0;  /* no rounded corners */
-  margin: 0;         /* remove margins */
+  width: 100%;
+  height: auto;
+  object-fit: cover;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .collage-image:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.App-footer {
-  background-color: #fff;     /* background for footer */
-  color: #333;
-  padding: 10px;
-  position: relative;
-  bottom: 0;
-  width: 100%;
-  border-top: 1px solid #ddd; /* border for separation */
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);   /* black overlay */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: auto;                           /* scrolling */
-  z-index: 1000;
-}
-
-.modal-content {
-  position: relative;
-  max-width: 90%;
-  max-height: 90%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #fff;   /* opt: white background */
-}
-
-.modal-image {
-  max-width: 100%;
-  max-height: 100vh;          /* limit image height to viewport height */
-  object-fit: contain;        /* scale image proportionally without distortion */
-  border-radius: 0;           /* sharp corners when clicked */
-  display: block;
-}
-
-.close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 2rem;
-  color: #fff;
-  cursor: pointer;
-  user-select: none;
-  z-index: 1100;
 }

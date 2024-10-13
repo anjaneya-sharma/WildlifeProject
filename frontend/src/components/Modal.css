@@ -1,0 +1,61 @@
+/* Modal Overlay */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    z-index: 1000;
+}
+
+/* Modal Content Box */
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #fff;        /* white background for content */
+    border-radius: 10px;             /* rounded corners */
+    padding: 10px;                   
+    box-sizing: border-box;
+    overflow: hidden;
+    max-width: 90vw;                 /* limit the width to 90% of the viewport */
+    max-height: 80vh;                /* limit the height to 80% of the viewport */
+    transition: all 0.3s ease;
+}
+
+/* Image Styling in Modal */
+.modal-image {
+    width: 100%;                     /* Set the width to 100% */
+    height: auto;                    /* Let the height adjust automatically to preserve the aspect ratio */
+    object-fit: contain;             /* Ensure the image fits inside the container */
+    margin-bottom: 0px;              /* Small space below image for metadata */
+    max-height: calc(80vh - 50px);   /* Ensure the image doesn't overflow and respects the modal height */
+}
+
+/* Bottom Metadata Section */
+.modal-metadata {
+    width: 100%;
+    padding: 5px 10px;
+    text-align: left;
+    color: #333;
+    font-size: 0.9rem;
+    /* No background for metadata */
+}
+
+/* Close Button Style */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 2rem;
+    color: #000;
+    cursor: pointer;
+    user-select: none;
+}

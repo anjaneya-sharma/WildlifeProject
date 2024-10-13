@@ -1,0 +1,32 @@
+/* Bounding box styles */
+.bounding-box {
+    position: absolute;
+    border: 2px solid #39ff14;
+    /* Green border for the bounding box */
+    box-sizing: border-box;
+    cursor: move;
+    /* Allows the user to move the bounding box */
+    transition: all 0.2s ease-in-out;
+    /* Smooth transition when resizing */
+}
+
+/* Resizer styles */
+.resizer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    background-color: #39ff14;
+    /* Green square resizer */
+    cursor: se-resize;
+    /* Cursor style indicating resize action */
+    border-radius: 50%;
+    /* Circular shape for the resizer */
+}
+
+/* Optional: Resizer hover effect */
+.resizer:hover {
+    background-color: #ff9900;
+    /* Change color when hovered */
+}
