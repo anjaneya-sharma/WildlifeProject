@@ -10,25 +10,29 @@ import Footer from './components/Footer';
 const path_to_images = 'http://127.0.0.1:8000/image/';
 
 function App() {
-  const [images, set_images] = useState([]);
-  const [selected_image, set_selected_image] = useState(null);
-  const [column_images, set_column_images] = useState([[], [], [], [], []]);
+
+  const [images, set_images] = useState([]);                                            // state to keep the list of image URLs fetched from the backend
+  const [selected_image, set_selected_image] = useState(null);                          // state to keep the currently selected image (used in the Modal for viewing a single image)
+  const [column_images, set_column_images] = useState([[], [], [], [], []]);            // state to keep an array of arrays representing images grouped by columns for the collage layout
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/images')
+    axios.get('http://127.0.0.1:8000/images')                                           // request to fetch the image list                                    
       .then(response => {
-        const loaded_images = response.data.images;
-        set_images(loaded_images);
-        distribute_images(loaded_images);
+        const loaded_images = response.data.images;                                     // take out image data from the backend response 
+        set_images(loaded_images);                                                      // update state with the list of images
+        distribute_images(loaded_images);                                               // distribute the images into columns 
       })
       .catch(error => {
-        console.error('error fetching images:', error);
+        console.error('error fetching images:', error);                                 // GET request failed
       });
-  }, []);
+  }, []);                                                                               // no dependency ensures this effect runs only once
 
+  // function to distribute images evenly across columns
   const distribute_images = (image_list) => {
-    const columns = Array.from({ length: 5 }, () => ({ height: 0, images: [] }));
-    image_list.forEach(image => {
+    const columns = Array.from({ length: 5 }, () => ({ height: 0, images: [] }));      // initialize array representing 5 columns each with a height of 0 and an empty image array
+    
+    // to get tha open image dataset v7 look
+    image_list.forEach(image => {                                                      
       const img = new Image();
       img.src = `${path_to_images}${image}`;
       img.onload = () => {
@@ -40,10 +44,12 @@ function App() {
     });
   };
 
+  // function to handle when an image in the collage is clicked, updates the selected_image state, triggering the modal to open
   const handle_image_click = (image) => {
     set_selected_image(image);
   };
 
+  // function to close the modal
   const handle_close_modal = () => {
     set_selected_image(null);
   };
