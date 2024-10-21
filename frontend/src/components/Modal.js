@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import './Modal.css';
+import './styles.css';
 import BoundingBox from './BoundingBox';
 
 const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box_data }) => {
@@ -90,7 +90,7 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
         }}
         ref={modalRef}
       >
-        <div className="image-container">
+        <div className="modal-image-container">
           <img
             ref={imageRef}
             src={`${path_to_images}${selected_image}`}

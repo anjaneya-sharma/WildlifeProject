@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import './BoundingBox.css';
+import './styles.css';
 
 const BoundingBox = ({ 
   id,
@@ -60,8 +60,8 @@ const BoundingBox = ({
       let newX = clientX - left - startPosRef.current.x;
       let newY = clientY - top - startPosRef.current.y;
 
-      newX = Math.max(0, Math.min(newX, imageWidth - box.width - 5));
-      newY = Math.max(0, Math.min(newY, imageHeight - box.height - 5));
+      newX = Math.max(0, Math.min(newX, imageWidth - box.width));
+      newY = Math.max(0, Math.min(newY, imageHeight - box.height));
 
       setBox(prevBox => ({ ...prevBox, x: newX, y: newY }));
     } else if (isResizing) {
@@ -98,10 +98,10 @@ const BoundingBox = ({
             break;
         }
 
-        newBox.x = Math.max(0, Math.min(newBox.x, imageWidth - newBox.width - 5));
-        newBox.y = Math.max(0, Math.min(newBox.y, imageHeight - newBox.height - 5));
-        newBox.width = Math.max(100, Math.min(newBox.width, imageWidth - newBox.x - 5));
-        newBox.height = Math.max(30, Math.min(newBox.height, imageHeight - newBox.y - 5));
+        newBox.x = Math.max(0, Math.min(newBox.x, imageWidth - newBox.width));
+        newBox.y = Math.max(0, Math.min(newBox.y, imageHeight - newBox.height));
+        newBox.width = Math.max(100, Math.min(newBox.width, imageWidth - newBox.x));
+        newBox.height = Math.max(30, Math.min(newBox.height, imageHeight - newBox.y));
 
         return newBox;
       });

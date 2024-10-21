@@ -1,2 +1,5 @@
-![Recent](./recent.png)
-![Bounding Box](./bounding-box.png)
+![Landing Page](./LandingPage.png)
+![User Type](./UserType.png)
+![Task Select](./TaskSelect.png)
+![Collage](./Collage.png)
+![Bounding Box](./BoundingBox.png)
