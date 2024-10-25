@@ -1,9 +1,12 @@
 import requests
+from PIL import Image
+from io import BytesIO
 import os
 
-api_key = ''  # Remove before committing to production
+api_key = 'QNckYJVhmc8HKXfLg0Hng1vA7u5KWFCNUlVRt4dTRCk'
 dir_images = r'C:\Users\ameyd\Desktop\IIITD\SEM 7\btp\my_project\frontend\public\assets\wildlife_images'
-num_images = 30  # Unsplash limits to 30
+num_images = 30 
+fixed_size = (1200, 800) 
 
 def create_directory(path):
     if not os.path.exists(path):
@@ -13,11 +16,12 @@ def download_image(url, file_path):
     try:
         response = requests.get(url)
         response.raise_for_status()
-        with open(file_path, 'wb') as file:
-            file.write(response.content)
-        print(f'Successfully downloaded: {file_path}')
+        image = Image.open(BytesIO(response.content))
+        image = image.resize(fixed_size, Image.LANCZOS)
+        image.save(file_path)
+        print(f'Successfully downloaded and resized: {file_path}')
     except Exception as e:
-        print(f'Error downloading {file_path}: {e}')
+        print(f'Error downloading or resizing {file_path}: {e}')
 
 def fetch_random_wildlife_images(num_images, access_key):
     url = f'https://api.unsplash.com/photos/random?count={num_images}&query=wildlife&client_id={access_key}'

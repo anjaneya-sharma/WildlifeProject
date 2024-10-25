@@ -370,7 +370,7 @@ p {
 .bounding-box {
   position: absolute;
   border: 2px solid #00ff00;
-  background-color: rgba(0, 255, 0, 0.1);
+  /* background-color: rgba(0, 255, 0, 0.1); */
   cursor: move;
   user-select: none;
   min-width: 100px;
@@ -379,8 +379,8 @@ p {
 }
 
 .bounding-box:hover {
-  border-color: #00cc00;
-  background-color: rgba(0, 255, 0, 0.15);
+  border-color: #00ff00;
+  /* background-color: rgba(0, 255, 0, 0.15); */
 }
 
 .category-input {
