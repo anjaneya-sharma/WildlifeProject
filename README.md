@@ -39,9 +39,6 @@ cd WildlifeProject/frontend
 npm install
 ```
 ```bash
-npm install react-router-dom
-```
-```bash
 npm start
 ```
 

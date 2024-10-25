@@ -15,6 +15,7 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
   const modalRef = useRef(null);
   const modalBackgroundRef = useRef(null);
   const nextIdRef = useRef(2);
+  const [isInteractingWithBoundingBox, setIsInteractingWithBoundingBox] = useState(false);
 
   useEffect(() => {
     const updateImageSize = () => {
@@ -71,7 +72,8 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
   }, [boxes, selected_image]);
 
   const handleClickOutside = (e) => {
-    if (modalBackgroundRef.current && modalBackgroundRef.current === e.target) {
+    if (modalBackgroundRef.current && modalBackgroundRef.current === e.target && !isInteractingWithBoundingBox) {
+      // console.log("isInteractingWithBoundingBox:", isInteractingWithBoundingBox);
       handle_close_modal();
     }
   };
@@ -109,6 +111,7 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
               initialBox={box}
               onRemove={() => handleRemoveBox(box.id)}
               showRemoveButton={boxes.length > 1}
+              setIsInteractingWithBoundingBox={setIsInteractingWithBoundingBox}    
             />
           ))}
         </div>

@@ -8,7 +8,8 @@ const BoundingBox = ({
   onBoxChange, 
   initialBox = null,
   onRemove,
-  showRemoveButton
+  showRemoveButton,
+  setIsInteractingWithBoundingBox,
 }) => {
   const [box, setBox] = useState(() => {
     if (initialBox) {
@@ -26,7 +27,7 @@ const BoundingBox = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeHandle, setResizeHandle] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
+  // const [isFocused, setIsFocused] = useState(false);
 
   const boxRef = useRef(null);
   const inputRef = useRef(null);
@@ -40,6 +41,7 @@ const BoundingBox = ({
     const { left, top } = boxRef.current.getBoundingClientRect();
     startPosRef.current = { x: clientX - left, y: clientY - top };
     setIsDragging(true);
+    setIsInteractingWithBoundingBox(true);
   }, []);
 
   const handleResizeStart = useCallback((e, handle) => {
@@ -49,6 +51,7 @@ const BoundingBox = ({
     startPosRef.current = { x: clientX, y: clientY };
     setIsResizing(true);
     setResizeHandle(handle);
+    setIsInteractingWithBoundingBox(true);
   }, []);
 
   const handleMouseMove = useCallback((e) => {
@@ -112,6 +115,8 @@ const BoundingBox = ({
     e.preventDefault();
     setIsDragging(false);
     setIsResizing(false);
+    // setIsInteractingWithBoundingBox(false);
+    setTimeout(() => setIsInteractingWithBoundingBox(false), 50); // small delay 
   }, []);
 
   const handleCategoryChange = useCallback((e) => {
@@ -164,8 +169,8 @@ const BoundingBox = ({
         onChange={handleCategoryChange}
         onMouseDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
+        // onFocus={() => setIsFocused(true)}
+        // onBlur={() => setIsFocused(false)}
       />
       {showRemoveButton && (
         <button

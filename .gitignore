@@ -12,3 +12,5 @@ frontend/*.log
 frontend/.cache/
  
 frontend/package-lock.json
+
+backend/__pycache__/
