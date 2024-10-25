@@ -16,7 +16,8 @@ app.add_middleware(
 )
 
 
-IMAGE_DIR = r'C:\Users\ameyd\Desktop\IIITD\SEM 7\btp\my_project\frontend\src\assets\wildlife_images'
+current_dir = os.getcwd()
+IMAGE_DIR = current_dir[:-8] + '\\frontend\\src\\assets\\wildlife_images'
 
 class ImageResponse(BaseModel):
     images: List[str]
