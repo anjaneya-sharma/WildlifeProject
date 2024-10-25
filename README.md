@@ -20,7 +20,11 @@ git clone https://github.com/Am3-y/WildlifeProject.git
 1. Navigate to the backend directory:
 ```bash
 cd WildlifeProject/backend
+```
+```bash
 pip install fastapi
+```
+```bash
 fastapi dev main.py
 ```
 
@@ -30,8 +34,14 @@ The backend server should now be running on `http://localhost:8000/docs`
 1. Open a new terminal window and navigate to the frontend directory:
 ```bash
 cd WildlifeProject/frontend
+```
+```bash
 npm install
+```
+```bash
 npm install react-router-dom
+```
+```bash
 npm start
 ```
 
