@@ -201,8 +201,8 @@
 /* TaskSelectionPage styles */
 .task-selection-page {
   min-height: 100vh;
-  padding: 80px 0 60px;
   background-color: #f5f7fa;
+  background-image: linear-gradient(to bottom, #f5f7fa, #edf2f7);
 }
 
 .task-selection-content {
@@ -213,48 +213,232 @@
 
 .task-selection-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin: 2rem 0 4rem;
+}
+
+.task-selection-header h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.task-selection-header p {
+  font-size: 1.2rem;
+  color: #4a5568;
+}
+
+.upload-view-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.upload-section, .view-section {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  height: 250px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-section:hover, .view-section:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+}
+
+.upload-section.selected, .view-section.selected {
+  border: 2px solid #4299e1;
+  background-color: #ebf8ff;
+}
+
+.upload-section.upload-success {
+  border: 2px solid #48bb78;
+  background-color: #f0fff4;
+}
+
+.upload-section.upload-error {
+  border: 2px solid #f56565;
+  background-color: #fff5f5;
+}
+
+.file-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.upload-content, .view-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.upload-icon, .view-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.upload-content h3, .view-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.75rem;
+}
+
+.upload-content p, .view-content p {
+  color: #718096;
+  font-size: 1rem;
+}
+
+.status-message {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.status-message.success {
+  background-color: #48bb78;
+  color: white;
+}
+
+.status-message.error {
+  background-color: #f56565;
+  color: white;
+}
+
+.file-count {
+  margin-top: 1rem;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.tasks-container {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tasks-container h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
 .tasks-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
 }
 
 .task-card {
   background-color: white;
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
   position: relative;
 }
 
 .task-card:not(.disabled):hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
 }
 
 .task-card.disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
 .task-icon {
   font-size: 2.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.task-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.75rem;
+}
+
+.task-card p {
+  color: #718096;
 }
 
 .coming-soon {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background-color: #666;
+  background-color: #718096;
   color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
   font-size: 0.8rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .upload-view-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .tasks-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .task-selection-header h1 {
+    font-size: 2rem;
+  }
+}
+
+.upload-section, .view-section {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  height: 250px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.upload-section.drag-active {
+  border: 2px dashed #4299e1;
+  background-color: #ebf8ff;
+}
+
+.status-message.info {
+  background-color: #4299e1;
+  color: white;
+}
+
+.upload-details {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  opacity: 0.9;
 }
 
 /* LoginPage styles */

@@ -1,4 +1,4 @@
-// MainApp.js
+// ObjectDetection.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './styles.css';
@@ -9,7 +9,7 @@ import Footer from './Footer';
 
 const path_to_images = 'http://127.0.0.1:8000/image/';
 
-function MainApp() {
+function ObjectDetection() {
 
   const [images, set_images] = useState([]);                                            // state to keep the list of image URLs fetched from the backend
   const [selected_image, set_selected_image] = useState(null);                          // state to keep the currently selected image (used in the Modal for viewing a single image)
@@ -72,4 +72,4 @@ function MainApp() {
   );
 }
 
-export default MainApp;
+export default ObjectDetection;

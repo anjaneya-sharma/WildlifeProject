@@ -32,7 +32,7 @@ const RoleCard = ({ type, icon, description, features, isSelected, onClick }) =>
   </div>
 );
 
-const LoginPage = () => {
+const UserType = () => {
   const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState(null);
   const [error, setError] = useState('');
@@ -106,4 +106,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default UserType;

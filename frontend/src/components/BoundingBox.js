@@ -42,7 +42,7 @@ const BoundingBox = ({
     startPosRef.current = { x: clientX - left, y: clientY - top };
     setIsDragging(true);
     setIsInteractingWithBoundingBox(true);
-  }, []);
+  }, [setIsInteractingWithBoundingBox]);
 
   const handleResizeStart = useCallback((e, handle) => {
     e.preventDefault();
@@ -52,7 +52,7 @@ const BoundingBox = ({
     setIsResizing(true);
     setResizeHandle(handle);
     setIsInteractingWithBoundingBox(true);
-  }, []);
+  }, [setIsInteractingWithBoundingBox]);
 
   const handleMouseMove = useCallback((e) => {
     e.preventDefault();
@@ -117,7 +117,7 @@ const BoundingBox = ({
     setIsResizing(false);
     // setIsInteractingWithBoundingBox(false);
     setTimeout(() => setIsInteractingWithBoundingBox(false), 50); // small delay 
-  }, []);
+  }, [setIsInteractingWithBoundingBox]);
 
   const handleCategoryChange = useCallback((e) => {
     const newCategory = e.target.value;

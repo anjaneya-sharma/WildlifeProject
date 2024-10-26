@@ -52,7 +52,7 @@ const LandingPage = () => {
         <section className="hero">
           <h1>AIWildlife Analysis</h1>
           <p>Leveraging artificial intelligence to analyze, track, and understand wildlife in their natural habitats.</p>
-          <button className="cta-button" onClick={() => navigate('/login')}>
+          <button className="cta-button" onClick={() => navigate('/user-type')}>
             Start Analyzing
             <span className="arrow">→</span>
           </button>
