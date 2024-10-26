@@ -49,5 +49,5 @@ The frontend application should now be running on `http://localhost:3000`
 ![Task Select](./images/TaskSelect.png)
 ![Old Uploads](./images/OldUploads.png)
 ![New Uploads](./images/NewUploads.png)
-![Collage](./images/Collage.png)
+![Collage Page](./images/CollagePage.png)
 ![Bounding Box](./images/BoundingBox.png)
