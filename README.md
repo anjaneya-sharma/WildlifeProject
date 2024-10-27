@@ -51,3 +51,4 @@ The frontend application should now be running on `http://localhost:3000`
 ![New Uploads](./images/NewUploads.png)
 ![Collage Page](./images/CollagePage.png)
 ![Bounding Box](./images/BoundingBox.png)
+
