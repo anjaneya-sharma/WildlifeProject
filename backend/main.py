@@ -428,6 +428,30 @@ def get_processed_image(
         processed_date = processed_image.processed_date,
         file_path = processed_image.file_path
     )
+    
+@app.get("/processed-images", response_model=List[ProcessedImageListResponse])
+def get_all_processed_images(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    query = (
+        db.query(ProcessedImage)
+        .join(RawImage, ProcessedImage.original_image_id == RawImage.id)
+        .where(RawImage.user_id == current_user.id)
+        .options(selectinload(ProcessedImage.original_image))
+    )
+    processed_images = query.all()
+    return [
+        ProcessedImageListResponse(
+            id = img.id,
+            filename = img.filename,
+            processing_type = img.processing_type,
+            processed_date = img.processed_date,
+            metadata = img.metadata_,
+            results = img.results,
+        )
+        for img in processed_images
+    ]
 
 
 if __name__ == '__main__':
