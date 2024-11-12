@@ -5,7 +5,7 @@ import './styles.css';
 const Footer = () => {
   return (
     <footer className="App-footer">
-      {/* <p>&copy; 2024 IIITD. All rights reserved.</p> */}
+      <p>&copy; 2024 IIITD. All rights reserved.</p>
     </footer>
   );
 };

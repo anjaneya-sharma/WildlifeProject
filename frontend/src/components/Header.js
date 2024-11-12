@@ -3,10 +3,10 @@ import React from 'react';
 import './styles.css';
 
 
-const logoPath = '/assets/static/AIWilD.jpg';
-const iiitdLogoPath = '/assets/static/iiitd logo.png';
-const wiiLogoPath = '/assets/static/WII Logo.jpeg';
-const ntcaLogoPath = '/assets/static/NTCA logo.png';
+const logoPath = '/assets/static/AIWilD.webp';
+const iiitdLogoPath = '/assets/static/iiitd logo.webp';
+const wiiLogoPath = '/assets/static/WII Logo.webp';
+const ntcaLogoPath = '/assets/static/NTCA logo.webp';
 
 const Header = () => {
   return (

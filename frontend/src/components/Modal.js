@@ -2,20 +2,35 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './styles.css';
 import BoundingBox from './BoundingBox';
 
-const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box_data }) => {
+const Modal = ({ selected_image, path_to_images, handle_close_modal }) => {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
-  const [boxes, setBoxes] = useState(() => {
-    if (initial_box_data) {
-      return [{ id: 1, ...initial_box_data }];
-    }
-    return [{ id: 1, x: 10, y: 10, width: 100, height: 100, category: 'XYZ' }];
-  });
-
+  const [boxes, setBoxes] = useState([]);
   const imageRef = useRef(null);
   const modalRef = useRef(null);
   const modalBackgroundRef = useRef(null);
-  const nextIdRef = useRef(2);
+  const nextIdRef = useRef(1);
   const [isInteractingWithBoundingBox, setIsInteractingWithBoundingBox] = useState(false);
+
+  useEffect(() => {
+    // Fetch existing boxes when image loads
+    const fetchBoxes = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/get_boxes/${selected_image}`);
+        if (response.ok) {
+          const data = await response.json();
+          setBoxes(data.boxes || []);
+          // Update nextIdRef based on existing boxes
+          if (data.boxes && data.boxes.length > 0) {
+            nextIdRef.current = Math.max(...data.boxes.map(b => b.id)) + 1;
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching boxes:', error);
+      }
+    };
+
+    fetchBoxes();
+  }, [selected_image]);
 
   useEffect(() => {
     const updateImageSize = () => {
@@ -34,8 +49,8 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
   }, [selected_image, path_to_images]);
 
   const handleBoxChange = useCallback((newBoxData, id) => {
-    setBoxes(prevBoxes => 
-      prevBoxes.map(box => 
+    setBoxes(prevBoxes =>
+      prevBoxes.map(box =>
         box.id === id ? { ...box, ...newBoxData } : box
       )
     );
@@ -66,9 +81,30 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
   const handleSave = useCallback(() => {
     const data = {
       filename: selected_image,
-      boxes: boxes
+      boxes: boxes.map(box => ({
+        id: box.id,
+        x: box.x,
+        y: box.y,
+        width: box.width,
+        height: box.height,
+        category: box.category
+      }))
     };
-    console.log('Saving data:', data);
+
+    fetch('http://127.0.0.1:8000/save_boxes/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(result => {
+        console.log('Success:', result);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   }, [boxes, selected_image]);
 
   const handleClickOutside = (e) => {
@@ -79,9 +115,9 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
   };
 
   return (
-    <div 
-      className="modal" 
-      ref={modalBackgroundRef} 
+    <div
+      className="modal"
+      ref={modalBackgroundRef}
       onClick={handleClickOutside}
     >
       <div
@@ -111,7 +147,7 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
               initialBox={box}
               onRemove={() => handleRemoveBox(box.id)}
               showRemoveButton={boxes.length > 1}
-              setIsInteractingWithBoundingBox={setIsInteractingWithBoundingBox}    
+              setIsInteractingWithBoundingBox={setIsInteractingWithBoundingBox}
             />
           ))}
         </div>
@@ -124,7 +160,7 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
         <div className="modal-metadata">
           <p>Metadata for {selected_image}</p>
         </div>
-        <span className="close" onClick={handle_close_modal}>&times;</span>
+        {/* <span className="close" onClick={handle_close_modal}>&times;</span> */}
       </div>
     </div>
   );
