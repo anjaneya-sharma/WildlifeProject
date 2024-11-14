@@ -148,8 +148,8 @@ const TaskSelectionPage = () => {
       <Header />
       <main className="task-selection-content">
         <div className="task-selection-header">
-          <h1>Wildlife Image Analysis</h1>
-          <p>Upload new images or analyze existing ones</p>
+          <h1>Image Analysis</h1>
+          {/* <p>Upload new images</p> */}
         </div>
 
         <div className="upload-view-section">
@@ -158,10 +158,10 @@ const TaskSelectionPage = () => {
             isSelected={selectedMode === 'upload'}
             uploadStatus={uploadStatus}
           />
-          <ViewSection
+          {/* <ViewSection
             onClick={handleViewOld}
             isSelected={selectedMode === 'view'}
-          />
+          /> */}
         </div>
 
         {shouldShowTasks && (

@@ -17,6 +17,9 @@ const Header = () => {
           <a href="/" className="nav-link">Home</a>
           <a href="#" className="nav-link">Team</a>
           <a href="mailto:anands@iiitd.ac.in" className="nav-link">Contact Us</a>
+           {/* ####################################################33 */}
+          <a href="/view-images" className="nav-link">Analyse Existing Images</a>
+
         </nav>
         <div className="logo-group">
           <img src={ntcaLogoPath} alt="NTCA Logo" className="small-logo" />
