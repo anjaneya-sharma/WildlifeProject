@@ -45,10 +45,9 @@ npm start
 The frontend application should now be running on `http://localhost:3000`
 
 ![Landing Page](./images/LandingPage.png)
-![User Type](./images/UserType.png)
-![Task Select](./images/TaskSelect.png)
-![Old Uploads](./images/OldUploads.png)
-![New Uploads](./images/NewUploads.png)
+<!-- ![User Type](./images/UserType.png)
+![Task Select](./images/TaskSelect.png) -->
+<!-- ![Old Uploads](./images/OldUploads.png) -->
+<!-- ![New Uploads](./images/NewUploads.png) -->
 ![Collage Page](./images/CollagePage.png)
 ![Bounding Box](./images/BoundingBox.png)
-
