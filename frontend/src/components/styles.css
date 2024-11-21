@@ -1068,3 +1068,45 @@ p {
 .image:hover {
   transform: scale(1.05);
 }
+
+
+
+/* ---------------------------------------------'collage for re id after pressing an image'------------------------------------------- */
+
+/* Image Detail Styling */
+.image-detail-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+.image-detail-main {
+  width: 80%;
+  max-width: 600px;
+  margin-bottom: 20px;
+}
+
+.collage-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.collage-column {
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.collage-image {
+  width: 100%;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.collage-image:hover {
+  opacity: 0.8;
+}
