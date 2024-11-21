@@ -910,3 +910,161 @@ p {
   transform: scale(0.95);
   color: #a62828;
 }
+
+
+.two-buttons-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.button-container {
+  display: flex;
+  gap: 20px; /* Spacing between buttons */
+  margin-top: 20px;
+}
+
+/* .button {
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+} */
+
+.button{
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.button:hover {
+  background-color: #0066cc;
+}
+
+
+
+
+/* ------------------------------------------------------------------- */
+.three-buttons-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+}
+
+.button-container {
+  display: flex;
+  gap: 30px; /* Space between buttons */
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.button-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 250px;
+  padding: 20px;
+  text-align: center;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.button-icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.big-button {
+  padding: 20px 40px;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.big-button:hover {
+  background-color: #0056b3;
+}
+
+.big-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.disabled {
+  background-color: #ccc;
+}
+
+
+
+
+
+
+
+
+/* ______________________________________________________________________________________________________ */
+
+.image-container2 {
+  margin-top: 60px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 30px;
+}
+
+.image-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.image-item {
+  text-align: center;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  max-height: 300px;  /* Adjust this as necessary */
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.image:hover {
+  transform: scale(1.05);
+}
