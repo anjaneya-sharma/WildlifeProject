@@ -1,0 +1,13 @@
+{
+  "filename": "AnimalImages/c32f6e00-b7ef-4797-91b2-7c00d23c71b0.jpeg",
+  "boxes": [
+    {
+      "id": 2,
+      "x": 61.0,
+      "y": 48.0,
+      "width": 100.0,
+      "height": 100.0,
+      "category": "XYZ"
+    }
+  ]
+}
