@@ -148,7 +148,7 @@ const TaskSelectionPage = () => {
       <Header />
       <main className="task-selection-content">
         <div className="task-selection-header">
-          <h1>Image Analysis</h1>
+          <h1>Object Detection Analysis</h1>
           {/* <p>Upload new images</p> */}
         </div>
 

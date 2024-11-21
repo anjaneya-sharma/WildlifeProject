@@ -3,8 +3,8 @@ import React from 'react';
 import './styles.css';
 
 
-const logoPath = '/assets/static/AIWilD.jpg';
-const iiitdLogoPath = '/assets/static/iiitd logo.png';
+const logoPath = '/assets/static/AIWILD.jpg';
+const iiitdLogoPath = 'assets/static/NTCA logo.png';
 const wiiLogoPath = '/assets/static/WII Logo.jpeg';
 const ntcaLogoPath = '/assets/static/NTCA logo.png';
 
@@ -18,7 +18,7 @@ const Header = () => {
           <a href="#" className="nav-link">Team</a>
           <a href="mailto:anands@iiitd.ac.in" className="nav-link">Contact Us</a>
            {/* ####################################################33 */}
-          <a href="/view-images" className="nav-link">Analyse Existing Images</a>
+          <a href="/object-detection" className="nav-link">Analyse Existing Images</a>
 
         </nav>
         <div className="logo-group">
