@@ -1110,3 +1110,70 @@ p {
 .collage-image:hover {
   opacity: 0.8;
 }
+
+
+/* -----------------------------------'demo-modal classes'--------------------------------------- */
+
+/* Demo Modal Styles */
+.demo-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.demo-modal {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 600px;
+  max-width: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+
+.demo-modal-content {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.demo-modal-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.demo-modal-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  
+}
+
+.demo-footer-image {
+  width: 80%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.demo-close-button {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
