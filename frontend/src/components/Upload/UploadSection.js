@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 import UploadButton from './UploadButton';
 import StatusMessage from '../common/StatusMessage';
 import { uploadFiles, uploadFolders } from '../../api/uploadApi';
@@ -15,11 +17,21 @@ const UploadSection = ({ onUploadSuccess }) => {
       setUploadStatus(null);
 
       const files = Array.from(event.target.files);
-      const uploadFn = type === 'folder' ? uploadFolders : uploadFiles;
-      const result = await uploadFn(files);
-
-      setUploadStatus('upload-success');
-      onUploadSuccess(result.imageIds);
+      if (type === 'folder') {
+        const zip = new JSZip();
+        files.forEach(file => {
+          zip.file(file.webkitRelativePath, file);
+        });
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const zipFile = new File([zipBlob], 'folders.zip', { type: 'application/zip' });
+        const result = await uploadFolders([zipFile]);
+        setUploadStatus('upload-success');
+        onUploadSuccess(result.imageIds);
+      } else {
+        const result = await uploadFiles(files);
+        setUploadStatus('upload-success');
+        onUploadSuccess(result.imageIds);
+      }
     } catch (error) {
       console.error('Upload error:', error);
       setError(error.message);

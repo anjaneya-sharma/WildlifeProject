@@ -7,6 +7,8 @@ import uuid
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 import json
+import zipfile
+import io
 
 app = FastAPI()
 app.add_middleware(
@@ -39,8 +41,8 @@ class TaskResponse(BaseModel):
     status: str
     results: dict
 
-@app.post("/upload/", response_model=UploadResponse)
-async def upload_files(files: List[UploadFile] = File(...)):
+@app.post("/upload/raw-image", response_model=UploadResponse)
+async def upload_raw_image(files: List[UploadFile] = File(...)):
     image_ids = []
     try:
         for file in files:
@@ -57,6 +59,20 @@ async def upload_files(files: List[UploadFile] = File(...)):
             
             image_ids.append(file_id)
             
+        return UploadResponse(imageIds=image_ids)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/upload/raw-images-folder", response_model=UploadResponse)
+async def upload_raw_images_folder(file: UploadFile = File(...)):
+    image_ids = []
+    try:
+        with zipfile.ZipFile(io.BytesIO(await file.read()), 'r') as zip_ref:
+            zip_ref.extractall(UPLOAD_DIR)
+            for file_info in zip_ref.infolist():
+                if file_info.filename.endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')):
+                    file_id = str(uuid.uuid4())
+                    image_ids.append(file_id)
         return UploadResponse(imageIds=image_ids)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

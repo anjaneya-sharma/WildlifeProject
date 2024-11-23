@@ -2,7 +2,7 @@ const uploadFiles = async (files) => {
   const formData = new FormData();
   files.forEach(file => formData.append('files', file));
 
-  const response = await fetch('http://127.0.0.1:8000/upload/', {
+  const response = await fetch('http://127.0.0.1:8000/upload/raw-image', {
     method: 'POST',
     body: formData,
   });
@@ -16,12 +16,9 @@ const uploadFiles = async (files) => {
 
 const uploadFolders = async (files) => {
   const formData = new FormData();
-  files.forEach(file => {
-    formData.append('files', file);
-    formData.append('folders', file.webkitRelativePath);
-  });
+  files.forEach(file => formData.append('file', file));
 
-  const response = await fetch('http://127.0.0.1:8000/upload-folders/', {
+  const response = await fetch('http://127.0.0.1:8000/upload/raw-images-folder', {
     method: 'POST',
     body: formData,
   });
