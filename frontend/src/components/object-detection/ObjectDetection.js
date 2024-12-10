@@ -27,13 +27,32 @@ function ObjectDetection() {
 
   const distributeImages = (imageList) => {
     const columns = Array.from({ length: 5 }, () => ({ height: 0, images: [] }));
-    imageList.forEach(image => {
+      
+    imageList.forEach((imageData) => {
       const img = new Image();
-      img.src = image.src;
+      const imageUrl = `http://127.0.0.1:8000/raw-images/${imageData.id}`;
+      img.src = imageUrl;
+        
+      const imageObject = {
+        id: imageData.id,
+        src: imageUrl,
+        filename: imageData.filename || `Image ${imageData.id}`
+      };
+  
       img.onload = () => {
-        const minHeightColumn = columns.reduce((prev, curr) => prev.height < curr.height ? prev : curr);
-        minHeightColumn.images.push(image);
+        // Find column with minimum height, prioritizing leftmost column when heights are equal
+        const minHeightColumn = columns.reduce((prev, curr, currentIndex, arr) => {
+          const prevIndex = columns.indexOf(prev);
+          return curr.height < prev.height || (curr.height === prev.height && currentIndex < prevIndex)
+            ? curr 
+            : prev;
+        });
+  
+        // Add image to column with minimum height
+        minHeightColumn.images.push(imageObject);
         minHeightColumn.height += img.height;
+  
+        // Update state with new column distribution
         setColumnImages(columns.map(col => col.images));
       };
     });
@@ -58,7 +77,7 @@ function ObjectDetection() {
         <Collage columnImages={columnImages} handleImageClick={handleImageClick} />
         {selectedImage && (
           <Modal
-            selected_image={selectedImage}
+            selectedImage={selectedImage}
             handleCloseModal={handleCloseModal}
           />
         )}
