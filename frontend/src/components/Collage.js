@@ -1,20 +1,26 @@
-// Collage.js
 import React from 'react';
 import './styles.css';
 
+const Collage = ({ columnImages=[], handleImageClick }) => {
+  if (!Array.isArray(columnImages)) {
+    console.error('columnImages not an array');
+    return null;
+  }
 
-const Collage = ({ column_images, handle_image_click }) => {
   return (
     <div className="collage">
-      {column_images.map((images, index) => (
-        <div key={index} className="collage-column">
-          {images.map((image, idx) => (
+      {columnImages.map((images, columnIndex) => (
+        <div key={columnIndex} className="collage-column">
+          {Array.isArray(images) && images.map((image, imageIndex) => (
             <img
-              key={idx}
-              src={`http://127.0.0.1:8000/image/${image}`}
-              alt={image}
+              key={`${columnIndex}-${imageIndex}`}
+              src={image.src}
+              alt={image.filename}
               className="collage-image"
-              onClick={() => handle_image_click(image) }
+              onClick={() => handleImageClick(image)}
+              onError={(e) => {
+                console.error('Error loading image:', image.filename);
+              }}
             />
           ))}
         </div>
