@@ -10,11 +10,11 @@ export const fetchImages = async (className = 'All') => {
   try {
     const response = await axios.get(url);
     console.log('Fetched images:', response.data);
-    const images = response.data.map(imageData => ({
-      ...imageData,
-      src: `data:image/jpeg;base64,${imageData.data}`
+    const images = response.data.map(id => ({
+        id: id,
+        filename: `Image ${id}`,
+        src: `${API_BASE_URL}/raw-images/${id}`
     }));
-
     return images;
   } catch (error) {
     if (error.response) {
