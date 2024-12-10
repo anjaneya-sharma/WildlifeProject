@@ -130,7 +130,6 @@ class ProcessedImageResponse(BaseModel):
     id: int
     filename: str
     metadata: List[DetectionResult]
-    class_counts: Dict[str, int]
     class Config:
         from_attributes = True
 class ProcessedImageListResponse(BaseModel):
@@ -501,8 +500,9 @@ def get_images_by_class(class_name: str, \
             print(f"Raw image with ID {\
                 processed_image.original_image_id} not found")
             continue
-        encoded_image = base64.b64encode(raw_image.image_data).decode("utf-8")
-        response_data.append(encoded_image)
+        #encoded_image = base64.b64encode(raw_image.image_data).decode("utf-8")
+        #response_data.append(encoded_image)
+        response_data.append(raw_image.id)
     return response_data
         
 
