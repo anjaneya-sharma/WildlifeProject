@@ -39,7 +39,7 @@ const LandingPage = () => {
           <UploadSection onUploadSuccess={handleUploadSuccess} />
         </section>
         {showObjectDetection && <ObjectDetection uploadedImageIds={uploadedImageIds} />}
-        <Collage column_images={rawImages} handle_image_click={(imagePath) => console.log(imagePath)} />
+        <Collage columnImages={rawImages} handleImageClick={(imagePath) => console.log(imagePath)} />
       </main>
     </div>
   );
