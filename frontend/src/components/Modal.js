@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import BoundingBox from './BoundingBox';
 import './styles.css';
 
-const Modal = ({ selected_image, handleCloseModal }) => {
+const Modal = ({ selectedImage, handleCloseModal }) => {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const [boxes, setBoxes] = useState([]);
   const imageRef = useRef(null);
@@ -12,15 +12,15 @@ const Modal = ({ selected_image, handleCloseModal }) => {
   const [isInteractingWithBoundingBox, setIsInteractingWithBoundingBox] = useState(false);
 
   useEffect(() => {
-    if (!selected_image) {
-      console.error('Error: selected_image is undefined');
+    if (!selectedImage) {
+      console.error('Error: selectedImage is undefined');
       return;
     }
 
     // Fetch existing boxes when image loads
     const fetchBoxes = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/processed-images/${selected_image}`);
+        const response = await fetch(`http://127.0.0.1:8000/processed-images/${selectedImage}`);
         if (response.ok) {
           const data = await response.json();
           console.log('Fetched data:', data);
@@ -50,11 +50,11 @@ const Modal = ({ selected_image, handleCloseModal }) => {
     };
 
     fetchBoxes();
-  }, [selected_image]);
+  }, [selectedImage]);
 
   useEffect(() => {
-    if (!selected_image) {
-      console.error('Error: selected_image is undefined');
+    if (!selectedImage) {
+      console.error('Error: selectedImage is undefined');
       return;
     }
 
@@ -66,12 +66,12 @@ const Modal = ({ selected_image, handleCloseModal }) => {
     };
 
     const img = new Image();
-    img.src = `http://127.0.0.1:8000/raw-images/${selected_image}`;
+    img.src = `http://127.0.0.1:8000/raw-images/${selectedImage}`;
     img.onload = updateImageSize;
 
     window.addEventListener('resize', updateImageSize);
     return () => window.removeEventListener('resize', updateImageSize);
-  }, [selected_image]);
+  }, [selectedImage]);
 
   const handleBoxChange = useCallback((newBoxData, id) => {
     setBoxes(prevBoxes =>
@@ -107,8 +107,8 @@ const Modal = ({ selected_image, handleCloseModal }) => {
   const handleSave = useCallback(() => {
     console.log("handleSave function called");
 
-    if (!selected_image) {
-      console.error('handleSave Error: selected_image is undefined');
+    if (!selectedImage) {
+      console.error('handleSave Error: selectedImage is undefined');
       return;
     }
     
@@ -124,7 +124,7 @@ const Modal = ({ selected_image, handleCloseModal }) => {
     }));
 
     console.log('Saved data:', data);
-    fetch(`http://127.0.0.1:8000/annotations/${selected_image}`, {
+    fetch(`http://127.0.0.1:8000/annotations/${selectedImage}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ const Modal = ({ selected_image, handleCloseModal }) => {
       .catch(error => {
         console.error('Error:', error);
       });
-  }, [boxes, selected_image]);
+  }, [boxes, selectedImage]);
 
   const handleClickOutside = (e) => {
     if (modalBackgroundRef.current && modalBackgroundRef.current === e.target && !isInteractingWithBoundingBox) {
@@ -166,16 +166,16 @@ const Modal = ({ selected_image, handleCloseModal }) => {
         ref={modalRef}
       > 
         <div className="modal-image-container">
-          {selected_image ? (
+          {selectedImage ? (
             <img
               ref={imageRef}
-              src={`http://127.0.0.1:8000/raw-images/${selected_image}`}
-              alt={`ID: ${selected_image}`}
+              src={`http://127.0.0.1:8000/raw-images/${selectedImage}`}
+              alt={`ID: ${selectedImage}`}
               className="modal-image"
               onDragStart={(e) => e.preventDefault()}
             />
           ) : (
-            console.error('Error: selected_image is undefined')
+            console.error('Error: selectedImage is undefined')
           )}
 
           {imageSize.width > 0 && imageSize.height > 0 && boxes.map((box) => (
@@ -202,7 +202,7 @@ const Modal = ({ selected_image, handleCloseModal }) => {
           }}>Save</button>
         </div>
         <div className="modal-metadata">
-          <p>Metadata for {selected_image}</p>
+          <p>Metadata for {selectedImage}</p>
         </div>
       </div>
     </div>
