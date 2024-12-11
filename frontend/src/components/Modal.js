@@ -1,23 +1,63 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import './styles.css';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import BoundingBox from './BoundingBox';
+import './styles.css';
 
-const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box_data }) => {
+const Modal = ({ selectedImage, handleCloseModal }) => {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
-  const [boxes, setBoxes] = useState(() => {
-    if (initial_box_data) {
-      return [{ id: 1, ...initial_box_data }];
-    }
-    return [{ id: 1, x: 10, y: 10, width: 100, height: 100, category: 'XYZ' }];
-  });
-
+  const [boxes, setBoxes] = useState([]);
   const imageRef = useRef(null);
   const modalRef = useRef(null);
   const modalBackgroundRef = useRef(null);
-  const nextIdRef = useRef(2);
+  const nextIdRef = useRef(1);
   const [isInteractingWithBoundingBox, setIsInteractingWithBoundingBox] = useState(false);
 
   useEffect(() => {
+    if (!selectedImage) {
+      console.error('Error: selectedImage is undefined');
+      return;
+    }
+
+    // Fetch existing boxes when image loads
+    const fetchBoxes = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/processed-images/${selectedImage}`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Fetched data:', data);
+
+          if (data.metadata) {
+            const annotations = Object.values(data.metadata).map((detection, index) => ({
+              id: index,
+              x: detection.x - detection.width / 2,
+              y: detection.y - detection.height / 2,
+              width: detection.width,
+              height: detection.height,
+              category: detection.name,
+            }));
+            setBoxes(annotations);
+            if (annotations.length > 0) {
+              nextIdRef.current = Math.max(...annotations.map(b => b.id)) + 1;
+            }
+          } else {
+            console.error('Error: Unexpected response structure', data);
+          }
+        } else {
+          console.error('Error fetching boxes:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching boxes:', error);
+      }
+    };
+
+    fetchBoxes();
+  }, [selectedImage]);
+
+  useEffect(() => {
+    if (!selectedImage) {
+      console.error('Error: selectedImage is undefined');
+      return;
+    }
+
     const updateImageSize = () => {
       if (imageRef.current) {
         const { width, height } = imageRef.current.getBoundingClientRect();
@@ -26,25 +66,26 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
     };
 
     const img = new Image();
-    img.src = `${path_to_images}${selected_image}`;
+    img.src = `http://127.0.0.1:8000/raw-images/${selectedImage}`;
     img.onload = updateImageSize;
 
     window.addEventListener('resize', updateImageSize);
     return () => window.removeEventListener('resize', updateImageSize);
-  }, [selected_image, path_to_images]);
+  }, [selectedImage]);
 
   const handleBoxChange = useCallback((newBoxData, id) => {
-    setBoxes(prevBoxes => 
-      prevBoxes.map(box => 
+    setBoxes(prevBoxes =>
+      prevBoxes.map(box =>
         box.id === id ? { ...box, ...newBoxData } : box
       )
     );
   }, []);
 
   const handleAddBox = useCallback(() => {
+    console.log("handleAddBox function called");
     setBoxes(prevBoxes => [
       ...prevBoxes,
-      {
+      { 
         id: nextIdRef.current,
         x: 10,
         y: 10,
@@ -64,24 +105,56 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
   }, []);
 
   const handleSave = useCallback(() => {
-    const data = {
-      filename: selected_image,
-      boxes: boxes
-    };
-    console.log('Saving data:', data);
-  }, [boxes, selected_image]);
+    console.log("handleSave function called");
+
+    if (!selectedImage) {
+      console.error('handleSave Error: selectedImage is undefined');
+      return;
+    }
+    
+    console.log("Boxes before mapping:", boxes);
+
+    const data = boxes.map(box => ({
+      detection_id: box.id,
+      x: box.x + box.width / 2,
+      y: box.y + box.height / 2,
+      width: box.width,
+      height: box.height,
+      label: box.category
+    }));
+
+    console.log('Saved data:', data);
+    fetch(`http://127.0.0.1:8000/annotations/${selectedImage}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => {
+        if (response.status === 204) {
+          console.log('Success: Annotations updated');
+        } else {
+          return response.json().then(result => {
+            console.error('Error:', result);
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }, [boxes, selectedImage]);
 
   const handleClickOutside = (e) => {
     if (modalBackgroundRef.current && modalBackgroundRef.current === e.target && !isInteractingWithBoundingBox) {
-      // console.log("isInteractingWithBoundingBox:", isInteractingWithBoundingBox);
-      handle_close_modal();
+      handleCloseModal();
     }
   };
 
   return (
-    <div 
-      className="modal" 
-      ref={modalBackgroundRef} 
+    <div
+      className="modal"
+      ref={modalBackgroundRef}
       onClick={handleClickOutside}
     >
       <div
@@ -91,15 +164,19 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
           e.preventDefault();
         }}
         ref={modalRef}
-      >
+      > 
         <div className="modal-image-container">
-          <img
-            ref={imageRef}
-            src={`${path_to_images}${selected_image}`}
-            alt={selected_image}
-            className="modal-image"
-            onDragStart={(e) => e.preventDefault()}
-          />
+          {selectedImage ? (
+            <img
+              ref={imageRef}
+              src={`http://127.0.0.1:8000/raw-images/${selectedImage}`}
+              alt={`ID: ${selectedImage}`}
+              className="modal-image"
+              onDragStart={(e) => e.preventDefault()}
+            />
+          ) : (
+            console.error('Error: selectedImage is undefined')
+          )}
 
           {imageSize.width > 0 && imageSize.height > 0 && boxes.map((box) => (
             <BoundingBox
@@ -111,7 +188,7 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
               initialBox={box}
               onRemove={() => handleRemoveBox(box.id)}
               showRemoveButton={boxes.length > 1}
-              setIsInteractingWithBoundingBox={setIsInteractingWithBoundingBox}    
+              setIsInteractingWithBoundingBox={setIsInteractingWithBoundingBox}
             />
           ))}
         </div>
@@ -119,12 +196,14 @@ const Modal = ({ selected_image, path_to_images, handle_close_modal, initial_box
           <button className="control-button add-button" onClick={handleAddBox}>
             Add Box
           </button>
-          <button className="save-button" onClick={handleSave}>Save</button>
+          <button className="save-button" onClick={() => {
+            console.log("Save button clicked");
+            handleSave();
+          }}>Save</button>
         </div>
         <div className="modal-metadata">
-          <p>Metadata for {selected_image}</p>
+          <p>Metadata for {selectedImage}</p>
         </div>
-        <span className="close" onClick={handle_close_modal}>&times;</span>
       </div>
     </div>
   );

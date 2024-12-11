@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './styles.css';
 
 const BoundingBox = ({ 
@@ -27,7 +27,6 @@ const BoundingBox = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeHandle, setResizeHandle] = useState('');
-  // const [isFocused, setIsFocused] = useState(false);
 
   const boxRef = useRef(null);
   const inputRef = useRef(null);
@@ -115,7 +114,6 @@ const BoundingBox = ({
     e.preventDefault();
     setIsDragging(false);
     setIsResizing(false);
-    // setIsInteractingWithBoundingBox(false);
     setTimeout(() => setIsInteractingWithBoundingBox(false), 50); // small delay 
   }, [setIsInteractingWithBoundingBox]);
 
@@ -145,7 +143,11 @@ const BoundingBox = ({
       box.category !== lastUpdateRef.current.category
     ) {
       lastUpdateRef.current = box;
-      onBoxChange(box);
+      onBoxChange({
+        ...box,
+        x: box.x + box.width / 2,
+        y: box.y + box.height / 2
+      });
     }
   }, [box, onBoxChange]);
 
@@ -169,8 +171,6 @@ const BoundingBox = ({
         onChange={handleCategoryChange}
         onMouseDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
-        // onFocus={() => setIsFocused(true)}
-        // onBlur={() => setIsFocused(false)}
       />
       {showRemoveButton && (
         <button
