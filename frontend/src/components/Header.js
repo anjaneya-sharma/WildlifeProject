@@ -4,7 +4,7 @@ import './styles.css';
 
 
 const logoPath = '/assets/static/AIWILD.jpg';
-const iiitdLogoPath = 'assets/static/NTCA logo.png';
+const iiitdLogoPath = 'assets/static/iiitd logo.png';
 const wiiLogoPath = '/assets/static/WII Logo.jpeg';
 const ntcaLogoPath = '/assets/static/NTCA logo.png';
 
