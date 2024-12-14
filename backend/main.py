@@ -140,12 +140,13 @@ class ProcessedImageListResponse(BaseModel):
         from_attributes = True
 
 class BoundingBoxUpdate(BaseModel):
-    detection_id: int
+    detection_id: Optional[int] = None
     x: float
     y: float
     width: float
     height: float 
     label: str
+    
 class AnnotationResponse(BaseModel):
     id: int
     processed_image_id: int
@@ -581,46 +582,44 @@ def get_detection_details(processed_image_id: int, \
     }
 
 
-@app.post("/annotations/{raw_image_id}", status_code = 204)
-def create_annotation(raw_image_id: int, \
-    corrections: List[BoundingBoxUpdate], \
-        current_user: User = Depends(get_user_proxy), \
-            db: Session = Depends(get_db)):
+from sqlalchemy.orm.attributes import flag_modified
+
+@app.post("/annotations/{raw_image_id}", status_code=204)
+def create_annotation(raw_image_id: int,
+                      corrections: List[BoundingBoxUpdate],
+                      current_user: User = Depends(get_user_proxy),
+                      db: Session = Depends(get_db)):
     if not corrections:
-        raise HTTPException(status_code = 400, detail = "Corrections list is empty")
+        raise HTTPException(status_code=400, detail="Corrections list is empty")
     print("Incoming corrections data:")
     for correction in corrections:
         print(correction.model_dump_json())
-    
-    query = select(ProcessedImage).join(RawImage).where(\
-        ProcessedImage.original_image_id == raw_image_id, \
-            RawImage.user_id == current_user.id
-    #   .options(selectinload(ProcessedImage.original_image))
+
+    query = select(ProcessedImage).join(RawImage).where(
+        ProcessedImage.original_image_id == raw_image_id,
+        RawImage.user_id == current_user.id
     )
     result = db.execute(query)
-    processed_image = result.scalar_one_or_none()    
+    processed_image = result.scalar_one_or_none()
     if not processed_image:
-        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, \
-            detail = "Processed image not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Processed image not found")
     metadata = processed_image.metadata_
     if "detections" not in metadata:
-        raise HTTPException(status_code = 400, detail = "No detections found in metadata")
+        raise HTTPException(status_code=400, detail="No detections found in metadata")
     original_detections = metadata["detections"]
     for correction in corrections:
         if correction.detection_id is not None:
-            if (correction.detection_id < 0 or correction.detection_id >= \
-                len(original_detections)): 
-                raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, \
-                    detail = f"Invalid detection ID: {correction.detection_id}")    
+            if (correction.detection_id < 0 or correction.detection_id >=
+                    len(original_detections)):
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                    detail=f"Invalid detection ID: {correction.detection_id}")
             classes_dict = model.names
-            try: 
-            #class_id = classes_dict.index(annotation.corrected_detection.label)
-                class_id = next((id_ for id_, name in classes_dict.items() \
-                    if name == correction.label), None)
-            except ValueError:
-                raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, \
-                    detail = f"Invalid class name: {correction.label}"
-                )
+            class_id = next((id_ for id_, name in classes_dict.items()
+                             if name == correction.label), None)
+            if class_id is None:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                    detail=f"Invalid class name: {correction.label}")
             original_detections[correction.detection_id].update({
                 "x": correction.x,
                 "y": correction.y,
@@ -630,10 +629,20 @@ def create_annotation(raw_image_id: int, \
                 "class_id": class_id,
                 "name": correction.label,
             })
-        else: original_detections = {}
+        else:
+            original_detections.append({
+                "x": correction.x,
+                "y": correction.y,
+                "width": correction.width,
+                "height": correction.height,
+                "confidence": 1.0,
+                "class_id": class_id,
+                "name": correction.label,
+            })
     processed_image.metadata_["detections"] = original_detections
+    flag_modified(processed_image, "metadata_")
     db.commit()
-    return Response(status_code = 204)
+    return Response(status_code=204)
 
 
 @app.put("/annotations/{raw_image_id}/{detection_id}", status_code = 204)

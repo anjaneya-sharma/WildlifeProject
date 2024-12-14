@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import BoundingBox from './BoundingBox';
 import './styles.css';
 
-const Modal = ({ selectedImage, handleCloseModal }) => {
+const Modal = ({ selectedImage, handleCloseModal, classList }) => { // Ensure classList is passed correctly
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const [boxes, setBoxes] = useState([]);
   const imageRef = useRef(null);
@@ -28,6 +28,7 @@ const Modal = ({ selectedImage, handleCloseModal }) => {
           if (data.metadata) {
             const annotations = Object.values(data.metadata).map((detection, index) => ({
               id: index,
+              detection_id: index,  // Incorrect assignment
               x: detection.x - detection.width / 2,
               y: detection.y - detection.height / 2,
               width: detection.width,
@@ -87,6 +88,7 @@ const Modal = ({ selectedImage, handleCloseModal }) => {
       ...prevBoxes,
       { 
         id: nextIdRef.current,
+        detection_id: null,
         x: 10,
         y: 10,
         width: 100,
@@ -106,30 +108,31 @@ const Modal = ({ selectedImage, handleCloseModal }) => {
 
   const handleSave = useCallback(() => {
     console.log("handleSave function called");
-
+  
     if (!selectedImage) {
       console.error('handleSave Error: selectedImage is undefined');
       return;
     }
     
     console.log("Boxes before mapping:", boxes);
-
-    const data = boxes.map(box => ({
-      detection_id: box.id,
-      x: box.x + box.width / 2,
-      y: box.y + box.height / 2,
+  
+    // Convert boxes to corrections format
+    const corrections = boxes.map(box => ({
+      detection_id: box.id >= 0 ? box.id : null,  // Incorrect mapping
+      x: box.x + box.width / 2,  // Convert to center coordinates
+      y: box.y + box.height / 2, // Convert to center coordinates
       width: box.width,
       height: box.height,
-      label: box.category
+      label: box.category,    // Ensure label matches backend class names
     }));
-
-    console.log('Saved data:', data);
+  
+    console.log('Sending corrections:', corrections);
     fetch(`http://127.0.0.1:8000/annotations/${selectedImage}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(corrections)  // Send as a JSON array
     })
       .then(response => {
         if (response.status === 204) {
@@ -171,6 +174,12 @@ const Modal = ({ selectedImage, handleCloseModal }) => {
               ref={imageRef}
               src={`http://127.0.0.1:8000/raw-images/${selectedImage}`}
               alt={`ID: ${selectedImage}`}
+              onLoad={() => {
+                if (imageRef.current) {
+                  const { width, height } = imageRef.current.getBoundingClientRect();
+                  setImageSize({ width, height });
+                }
+              }}
               className="modal-image"
               onDragStart={(e) => e.preventDefault()}
             />
@@ -189,6 +198,7 @@ const Modal = ({ selectedImage, handleCloseModal }) => {
               onRemove={() => handleRemoveBox(box.id)}
               showRemoveButton={boxes.length > 1}
               setIsInteractingWithBoundingBox={setIsInteractingWithBoundingBox}
+              classList={classList} // Pass class list to BoundingBox
             />
           ))}
         </div>
@@ -196,13 +206,7 @@ const Modal = ({ selectedImage, handleCloseModal }) => {
           <button className="control-button add-button" onClick={handleAddBox}>
             Add Box
           </button>
-          <button className="save-button" onClick={() => {
-            console.log("Save button clicked");
-            handleSave();
-          }}>Save</button>
-        </div>
-        <div className="modal-metadata">
-          <p>Metadata for {selectedImage}</p>
+          <button className="save-button" onClick={handleSave}>Save</button>
         </div>
       </div>
     </div>

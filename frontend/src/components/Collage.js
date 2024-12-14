@@ -25,26 +25,18 @@ const Collage = ({ columnImages = [], handleImageClick }) => {
 
               const { src, filename } = image;
               if (!src || !filename) {
-                console.error(`Warning: Missing "src" or "filename" for image at column ${columnIndex}, index ${imageIndex}. Image object:`, image);
+                console.error(`Error: Missing src or filename for image at column ${columnIndex}, index ${imageIndex}.`);
+                return null;
               }
 
               return (
                 <img
-                  key={`${columnIndex}-${imageIndex}`}
+                  key={image.id}
                   src={src}
-                  alt={filename || 'Image'}
+                  alt={filename}
                   className="collage-image"
-                  onClick={() => {
-                    console.log(`Image clicked:`, image);
-                    if (handleImageClick) {
-                      handleImageClick(image);
-                    } else {
-                      console.warn('handleImageClick is not defined.');
-                    }
-                  }}
-                  onError={(e) => {
-                    console.error(`Error loading image at column ${columnIndex}, index ${imageIndex}:`, image, e);
-                  }}
+                  onClick={() => handleImageClick(image.id)}
+                  draggable={false}
                 />
               );
             })}

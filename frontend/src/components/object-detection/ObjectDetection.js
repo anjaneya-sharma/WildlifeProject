@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { fetchImages } from '../../api/imageApi';
+import React, { useEffect, useRef, useState } from 'react';
 import ClassFilter from '../ClassFilter';
 import Collage from '../Collage';
 import Modal from '../Modal';
+import Footer from '../Footer';
 import '../styles.css';
+import { fetchImages } from '../../api/imageApi';
 
 function ObjectDetection() {
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [columnImages, setColumnImages] = useState([[], [], [], [], []]);
   const [selectedClass, setSelectedClass] = useState('All');
+  const [classList, setClassList] = useState([]); // New state for class list
 
   useEffect(() => {
     const loadImages = async () => {
@@ -58,27 +60,21 @@ function ObjectDetection() {
     });
   };
 
-  const handleImageClick = (image) => {
-    setSelectedImage(image.id);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedImage(null);
-  };
-
   return (
     <div className="App">
       <main>
-        <ClassFilter
-          onClassSelect={setSelectedClass}
+        <ClassFilter 
+          onClassSelect={setSelectedClass} 
           selectedClass={selectedClass}
           setImages={setImages}
+          setClassList={setClassList} // Pass setClassList to ClassFilter
         />
-        <Collage columnImages={columnImages} handleImageClick={handleImageClick} />
+        <Collage columnImages={columnImages} handleImageClick={setSelectedImage} />
         {selectedImage && (
           <Modal
             selectedImage={selectedImage}
-            handleCloseModal={handleCloseModal}
+            handleCloseModal={() => setSelectedImage(null)}
+            classList={classList} // Pass classList to Modal
           />
         )}
       </main>

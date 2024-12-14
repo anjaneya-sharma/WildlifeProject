@@ -1,5 +1,22 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Select from 'react-select';
 import './styles.css';
+
+// Convert from center coordinates (YOLO) to top-left coordinates (React)
+const centerToTopLeft = (x_center, y_center, width, height) => ({
+  x: x_center - width/2,
+  y: y_center - height/2,
+  width,
+  height
+});
+
+// Convert from top-left coordinates (React) to center coordinates (YOLO)
+const topLeftToCenter = (x_topleft, y_topleft, width, height) => ({
+  x: x_topleft + width/2,
+  y: y_topleft + height/2,
+  width,
+  height
+});
 
 const BoundingBox = ({ 
   id,
@@ -10,14 +27,19 @@ const BoundingBox = ({
   onRemove,
   showRemoveButton,
   setIsInteractingWithBoundingBox,
+  classList,
 }) => {
   const [box, setBox] = useState(() => {
     if (initialBox) {
+      // Convert incoming YOLO coordinates to React coordinates
+      const reactCoords = centerToTopLeft(
+        initialBox.x,
+        initialBox.y,
+        initialBox.width,
+        initialBox.height
+      );
       return {
-        x: initialBox.x,
-        y: initialBox.y,
-        width: Math.max(initialBox.width, 100),
-        height: Math.max(initialBox.height, 30),
+        ...reactCoords,
         category: initialBox.category || 'XYZ'
       };
     }
@@ -29,18 +51,20 @@ const BoundingBox = ({
   const [resizeHandle, setResizeHandle] = useState('');
 
   const boxRef = useRef(null);
-  const inputRef = useRef(null);
+  const selectRef = useRef(null);
   const startPosRef = useRef({ x: 0, y: 0 });
   const lastUpdateRef = useRef(box);
 
   const handleMouseDown = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const { clientX, clientY } = e;
-    const { left, top } = boxRef.current.getBoundingClientRect();
-    startPosRef.current = { x: clientX - left, y: clientY - top };
-    setIsDragging(true);
-    setIsInteractingWithBoundingBox(true);
+    if (e.target === boxRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      const { clientX, clientY } = e;
+      const { left, top } = boxRef.current.getBoundingClientRect();
+      startPosRef.current = { x: clientX - left, y: clientY - top };
+      setIsDragging(true);
+      setIsInteractingWithBoundingBox(true);
+    }
   }, [setIsInteractingWithBoundingBox]);
 
   const handleResizeStart = useCallback((e, handle) => {
@@ -108,19 +132,14 @@ const BoundingBox = ({
         return newBox;
       });
     }
-  }, [isDragging, isResizing, resizeHandle, box.width, box.height, imageWidth, imageHeight]);
+  }, [isDragging, isResizing, resizeHandle, imageWidth, imageHeight, box.width]);
 
   const handleMouseUp = useCallback((e) => {
     e.preventDefault();
     setIsDragging(false);
     setIsResizing(false);
-    setTimeout(() => setIsInteractingWithBoundingBox(false), 50); // small delay 
+    setTimeout(() => setIsInteractingWithBoundingBox(false), 50);
   }, [setIsInteractingWithBoundingBox]);
-
-  const handleCategoryChange = useCallback((e) => {
-    const newCategory = e.target.value;
-    setBox(prevBox => ({ ...prevBox, category: newCategory }));
-  }, []);
 
   useEffect(() => {
     if (isDragging || isResizing) {
@@ -143,13 +162,18 @@ const BoundingBox = ({
       box.category !== lastUpdateRef.current.category
     ) {
       lastUpdateRef.current = box;
+      // Convert React coordinates to YOLO coordinates before sending update
+      const yoloCoords = topLeftToCenter(box.x, box.y, box.width, box.height);
       onBoxChange({
-        ...box,
-        x: box.x + box.width / 2,
-        y: box.y + box.height / 2
+        ...yoloCoords,
+        category: box.category
       });
     }
   }, [box, onBoxChange]);
+
+  const handleCategoryChange = useCallback((selectedOption) => {
+    setBox(prevBox => ({ ...prevBox, category: selectedOption.value }));
+  }, []);
 
   return (
     <div
@@ -163,14 +187,17 @@ const BoundingBox = ({
       }}
       onMouseDown={handleMouseDown}
     >
-      <input
-        ref={inputRef}
-        type="text"
-        className="category-input"
-        value={box.category}
+      <Select
+        ref={selectRef}
+        options={classList
+          .filter(cls => cls.trim().toLowerCase() !== 'all')
+          .map(cls => ({ value: cls, label: cls.replace(/-/g, ' ') }))}
+        value={{ value: box.category, label: box.category.replace(/-/g, ' ') }}
         onChange={handleCategoryChange}
-        onMouseDown={(e) => e.stopPropagation()}
-        onClick={(e) => e.stopPropagation()}
+        className="category-select"
+        classNamePrefix="select"
+        isSearchable
+        onMouseDown={e => e.stopPropagation()}
       />
       {showRemoveButton && (
         <button

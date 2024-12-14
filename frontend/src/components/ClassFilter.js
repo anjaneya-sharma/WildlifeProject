@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { fetchImages } from '../api/imageApi';
 
-const ClassFilter = ({ onClassSelect, selectedClass, setImages }) => {
+const ClassFilter = ({ onClassSelect, selectedClass, setImages, setClassList }) => { // Added setClassList prop
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [classes, setClasses] = useState([
@@ -26,6 +26,10 @@ const ClassFilter = ({ onClassSelect, selectedClass, setImages }) => {
     'melo_pers', 'pard_marm-Pardofelis marmorata', 'prio_pard-Prionodon pardicolor', 'tree_shre', 'vulp_vulp'
   ]);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    setClassList(classes); // Update classList in parent
+  }, [classes, setClassList]);
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
