@@ -1,0 +1,66 @@
+
+
+.home-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* Full viewport height */
+    margin: 0;
+    background-color: #f0f0f0;
+    /* Optional: background specific to the home section */
+}
+
+.home-box {
+    background-color: whitesmoke;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+/* Title styling */
+.title {
+    font-size: 36px;
+    /* Large title size */
+    color: #afa84c;
+    /* Green color */
+    margin-bottom: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Main container styling for links */
+.home-cont {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /* Space between links */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Link styling */
+.role-link {
+    font-size: 18px;
+    /* Increase link size */
+    color: #ffffff;
+    /* White text */
+    background-color: #4CAF50;
+    /* Green background */
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.role-link:hover {
+    background-color: #45a049;
+    /* Darker green on hover */
+    transform: scale(1.05);
+    /* Slightly enlarge on hover */
+}
