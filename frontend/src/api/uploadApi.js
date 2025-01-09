@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { handleUploadApiError } from '../utils/error.js';
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-const uploadFiles = async (files) => {
+export const uploadFiles = async (files) => {
   const formData = new FormData();
   formData.append('file', files[0]);
 
@@ -14,11 +15,12 @@ const uploadFiles = async (files) => {
     });
     return response.data;
   } catch (error) {
+    handleUploadApiError(error);
     throw new Error(error.response?.data?.detail || 'Network error while uploading');
   }
 };
 
-const uploadFolders = async (zipFile) => {
+export const uploadFolders = async (zipFile) => {
   const formData = new FormData();
   formData.append('folder', zipFile);
 
@@ -30,8 +32,7 @@ const uploadFolders = async (zipFile) => {
     });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.detail || 'Network error while uploading');
+    handleUploadApiError(error);
+    throw new Error(error.response?.data?.detail || 'Network error while uploading folders');
   }
 };
-
-export { uploadFiles, uploadFolders };

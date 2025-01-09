@@ -20,6 +20,7 @@ from fastapi import (Depends, FastAPI, File, Form, HTTPException, Response,
                      UploadFile, status)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from starlette.responses import FileResponse
 from passlib.context import CryptContext
 from PIL import Image
 from pydantic import BaseModel, EmailStr
@@ -30,9 +31,9 @@ from sqlalchemy.orm import Session, selectinload
 #                           init_prometheus)
 
 load_dotenv()
-secret_key = os.environ["SECRET_KEY"]
-encrypt_algo = os.environ["ALGORITHM"]
-access_token_exp_time = os.environ["ACCESS_TOKEN_EXPIRY"]
+# secret_key = os.environ["SECRET_KEY"]
+# encrypt_algo = os.environ["ALGORITHM"]
+# access_token_exp_time = os.environ["ACCESS_TOKEN_EXPIRY"]
 UPLOAD_DIRECTORY = Path("uploads/")
 PROCESSED_DIRECTORY = Path("processed/")
 WEIGHTS_PATH = Path("runs/train/wii_28_072/weights/best.pt")  
@@ -264,75 +265,121 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         "is_maintainer": user.is_maintainer})    
     return Token(access_token = access_token, token_type = "bearer")
 
+
+from utils.plots import Annotator, Colors 
+import cv2
+
 # All classes given by model.names 
 @app.post("/upload/raw-image")
-def upload_raw_image (file: UploadFile = File(...), \
-    current_user: User = Depends(get_user_proxy), \
-        db: Session = Depends(get_db)):
+def upload_raw_image(file: UploadFile = File(...),
+    current_user: User = Depends(get_user_proxy),
+    db: Session = Depends(get_db)):
     try:
+        # Read and validate image data
         image_data = file.file.read()
-        if not image_data: raise HTTPException(status_code = 400, \
-            detail = "file data is empty")
+        if not image_data:
+            raise HTTPException(status_code=400, detail="file data is empty")
+            
+        # Generate unique filename
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         unique_filename = f"{current_user.id}_{timestamp}_{file.filename}"
-        #file_path = UPLOAD_DIRECTORY / "raw" / unique_filename
-        #file_path.parent.mkdir(parents = True, exist_ok = True)
-        #with file_path.open("wb") as buffer: shutil.copyfileobj(file.file, buffer)
-        db_image = RawImage (
-            user_id = current_user.id,
-            filename = unique_filename,
-            image_data = image_data,
-            upload_date = datetime.now()
+        
+        # Save raw image to database
+        db_image = RawImage(
+            user_id=current_user.id,
+            filename=unique_filename,
+            image_data=image_data,
+            upload_date=datetime.now()
         )
         db.add(db_image)
-        db.commit() 
+        db.commit()
         db.refresh(db_image)
-        pil_image = Image.open(io.BytesIO(image_data))
-        with T.no_grad():  results = model(pil_image) 
-        processed_filename = f"processed_{unique_filename}"
-        #processed_path = PROCESSED_DIRECTORY / "processed" / processed_filename
-        #processed_path.parent.mkdir(parents = True, exist_ok = True)
-        #results.save(str(PROCESSED_DIRECTORY))
-        results_df = results.pandas().xywh[0]
-        processed_width, processed_height = results.ims[0].shape[1], \
-            results.ims[0].shape[0]
 
-        print("Results DataFrame columns:", results_df.columns)
-        processed_image = ProcessedImage (
-            original_image_id = db_image.id,
-            filename = processed_filename,
-            metadata_ = {
-                "image_size": { 
-                    "width": int(pil_image.width),
-                    "height": int(pil_image.height)
+        # Convert to PIL Image and get dimensions
+        pil_image = Image.open(io.BytesIO(image_data))
+        orig_width = pil_image.width
+        orig_height = pil_image.height
+        
+        print(f"Original image dimensions: {orig_width}x{orig_height}")
+
+        # Run model inference
+        with T.no_grad():
+            results = model(pil_image)
+
+        # Get processed dimensions from results tensor
+        processed_height = results.ims[0].shape[0]  # Height is dim 0
+        processed_width = results.ims[0].shape[1]   # Width is dim 1
+        
+        print(f"Processed dimensions: {processed_width}x{processed_height}")
+        
+        # Convert image for annotation
+        image_array = np.array(pil_image)
+        image_array = image_array[:, :, ::-1].copy() # RGB to BGR
+        annotator = Annotator(image_array)
+        
+        # Draw boxes
+        detections = []
+        results_df = results.pandas().xywh[0]
+        
+        for *xyxy, conf, cls in results.xyxy[0].cpu():
+            label = f'{model.names[int(cls)]} {conf:.2f}'
+            annotator.box_label(xyxy, label)
+
+        # Save annotated image
+        annotated_filename = f"annotated_{unique_filename}"
+        annotated_path = PROCESSED_DIRECTORY / annotated_filename
+        cv2.imwrite(str(annotated_path), annotator.result())
+        
+        # Create detection objects with proper scaling
+        for _, row in results_df.iterrows():
+            detection = {
+                "x": float(row['xcenter'] * orig_width / processed_width),
+                "y": float(row['ycenter'] * orig_height / processed_height),
+                "width": float(row['width'] * orig_width / processed_width),
+                "height": float(row['height'] * orig_height / processed_height),
+                "confidence": float(row['confidence']),
+                "class_id": int(row['class']),
+                "name": str(row['name'])
+            }
+            detections.append(detection)
+            print(f"Detection: {detection}")
+        
+        # Create processed image record
+        processed_image = ProcessedImage(
+            original_image_id=db_image.id,
+            filename=f"processed_{unique_filename}",
+            metadata_={
+                "image_size": {
+                    "width": orig_width,
+                    "height": orig_height
                 },
                 "confidence_threshold": float(model.conf),
                 "iou_threshold": float(model.iou),
-                "detections": [
-                    {
-                        "x": float(row['xcenter'] * pil_image.width / processed_width),
-                        "y": float(row['ycenter'] * pil_image.height / processed_height),
-                        "width": float(row['width'] * pil_image.width / processed_width),
-                        "height": float(row['height'] * pil_image.height / processed_height),
-                        "confidence": row['confidence'],
-                        "class_id": int(row['class']),
-                        "name": str(row['name']),
-                    }
-                    for _, row in results_df.iterrows()
-                ],
-            },
-        )   
+                "detections": detections
+            }
+        )
+        
         db.add(processed_image)
         db.commit()
 
         return {
             "message": "Image uploaded and processed successfully",
-            "raw_image_id": db_image.id, 
+            "raw_image_id": db_image.id,
             "processed_image_id": processed_image.id,
+            "annotated_image": annotated_filename
         }
+        
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code = 500, detail = str(e))
+        print(f"Error processing image: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/annotated-images/{filename}")
+def get_annotated_image(filename: str):
+    path = PROCESSED_DIRECTORY / filename
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="Annotated image not found")
+    return FileResponse(str(path))
 
 @app.post("/upload/raw-images-folder")
 def upload_raw_images_folder(folder: UploadFile = File(...), \

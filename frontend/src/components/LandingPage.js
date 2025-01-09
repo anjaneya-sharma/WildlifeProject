@@ -1,32 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { fetchRawImages } from '../api/rawImageApi';
-import Collage from './Collage';
+import { fetchRawImages } from '../api/imageApi.js';
 import Header from './Header';
-import UploadSection from './Upload/UploadSection';
-import ObjectDetection from './object-detection/ObjectDetection';
+import UploadSection from './UploadSection';
+import ObjectDetection from './ObjectDetection';
 import './styles.css';
+import Footer from './Footer';
+import { logError } from '../utils/error.js';
 
 const LandingPage = () => {
-  const [showObjectDetection, setShowObjectDetection] = useState(false);
+  const [isObjectDetectionVisible, setIsObjectDetectionVisible] = useState(false);
   const [uploadedImageIds, setUploadedImageIds] = useState([]);
-  const [rawImages, setRawImages] = useState([]);
+  const [rawImageFilenames, setRawImageFilenames] = useState([]);
+
+  const loadRawImages = async () => {
+    try {
+      const images = await fetchRawImages();
+      setRawImageFilenames(images.map(img => img.filename));
+    } catch (error) {
+      logError('Error loading raw images:', error);
+    }
+  };
 
   useEffect(() => {
-    const loadRawImages = async () => {
-      try {
-        const images = await fetchRawImages();
-        setRawImages(images.map(img => img.filename));
-      } catch (error) {
-        console.error('Error loading raw images:', error);
-      }
-    };
-
     loadRawImages();
   }, []);
 
   const handleUploadSuccess = (imageIds) => {
     setUploadedImageIds(prevIds => [...prevIds, ...imageIds]);
-    setShowObjectDetection(true);
+    setIsObjectDetectionVisible(true);
   };
 
   return (
@@ -38,9 +39,9 @@ const LandingPage = () => {
           <p>AI tool for species segregation</p>
           <UploadSection onUploadSuccess={handleUploadSuccess} />
         </section>
-        {showObjectDetection && <ObjectDetection uploadedImageIds={uploadedImageIds} />}
-        <Collage columnImages={rawImages} handleImageClick={(imagePath) => console.log(imagePath)} />
+        {isObjectDetectionVisible && <ObjectDetection uploadedImageIds={uploadedImageIds} />}
       </main>
+      {/* <Footer /> */}
     </div>
   );
 };

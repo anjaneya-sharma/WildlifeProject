@@ -1,10 +1,68 @@
+/*=============================================
+=            1. CSS Reset & Base             =
+=============================================*/
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Base Styles */
 html, body {
   min-width: 1024px; /* Minimum width before horizontal scroll appears */
   overflow-x: auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  line-height: 1.6;
+  color: #333;
 }
 
+h1, h2, h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
 
-/* App-header styles */
+p {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+/*=============================================
+=            2. Layout & Container           =
+=============================================*/
+
+.container {
+  position: relative;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.image-container img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.main-content {
+  /* max-width: 1500px; */
+  margin: 0;
+  /* padding: 2rem; */
+}
+
+/*=============================================
+=            3. Header & Navigation          =
+=============================================*/
+
+/* App Header */
 .App-header {
   position: relative;
   top: 0;
@@ -19,27 +77,19 @@ html, body {
   transition: all 0.3s ease;
 }
 
-/* Top bar container */
+/* Top Bar Container */
 .top-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0 0;
+  padding: 0;
   margin: 0 auto;
   max-width: 1500px;
   height: 64px;
 }
 
-/* Main logo */
-.logo {
-  height: 40px;
-  width: auto;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-/* Navigation links container */
+/* Navigation Links */
 .nav-links {
   display: flex;
   align-items: center;
@@ -48,7 +98,7 @@ html, body {
   flex-shrink: 0;
 }
 
-/* Individual navigation links */
+/* Individual Navigation Links */
 .nav-link {
   color: #333;
   text-decoration: none;
@@ -75,7 +125,14 @@ html, body {
   transform: scaleX(1);
 }
 
-/* Logo group on the right */
+/* Logo Styles */
+.logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .logo-group {
   display: flex;
   align-items: center;
@@ -83,60 +140,17 @@ html, body {
   flex-shrink: 0;
 }
 
-/* Small logos in the logo group */
 .small-logo {
   height: 30px;
   width: auto;
   object-fit: contain;
 }
 
-/* Handle very small screens */
-@media (max-width: 768px) {
-  .top-bar {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    /* Firefox */
-    -ms-overflow-style: none;
-    /* IE and Edge */
-    padding: 0 16px;
-  }
+/*=============================================
+=            4. Footer & Utilities           =
+=============================================*/
 
-  .top-bar::-webkit-scrollbar {
-    display: none;
-    /* Chrome, Safari, Opera */
-  }
-
-  .nav-links {
-    gap: 24px;
-    margin: 0 24px;
-  }
-
-  .logo-group {
-    gap: 12px;
-  }
-}
-
-/* Zoom handling */
-@media screen and (min-width: 769px) {
-  html {
-    min-width: 769px;
-  }
-
-  body {
-    min-width: 769px;
-  }
-
-  .App-header {
-    min-width: 769px;
-  }
-
-  .top-bar {
-    min-width: max-content;
-  }
-}
-
-/* Footer styles */
+/* Footer */
 .App-footer {
   background-color: #f8f9fa;
   color: #333;
@@ -148,16 +162,16 @@ html, body {
   right: 0;
 }
 
-/* LandingPage styles */
+/* Utility Classes */
+/* Add any additional utility classes here */
+
+/*=============================================
+=            5. Landing Page                 =
+=============================================*/
+
 .landing-page {
   min-height: 100vh;
   /* padding: 80px 0 60px; */
-}
-
-.main-content {
-  /* max-width: 1500px; */
-  margin: 0 0;
-  /* padding: 2rem; */
 }
 
 .hero {
@@ -221,36 +235,37 @@ html, body {
   margin-bottom: 1rem;
 }
 
-.upload-view-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-bottom: 4rem;
-}
+/*=============================================
+=        6. Components (Upload/View)         =
+=============================================*/
 
+/* Common styles for upload and view sections */
 .upload-section,
 .view-section {
   background-color: white;
   border-radius: 16px;
-  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); */
   height: 250px;
   transition: all 0.3s ease;
   position: relative;
-  overflow: hidden;
+  cursor: default;
+  max-width: 650px;
+  margin: 0 auto;
 }
 
-/* .upload-section:hover, */
+/* Hover Effects for View Section */
 .view-section:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Selected States */
 .upload-section.selected,
 .view-section.selected {
   border: 2px solid #4299e1;
   background-color: #ebf8ff;
 }
 
+/* Upload Success/Error States */
 .upload-section.upload-success {
   border: 2px solid #48bb78;
   background-color: #f0fff4;
@@ -261,6 +276,13 @@ html, body {
   background-color: #fff5f5;
 }
 
+/* Drag Active State */
+.upload-section.drag-active {
+  border: 2px dashed #4299e1;
+  background-color: #ebf8ff;
+}
+
+/* File Input */
 .file-input {
   position: absolute;
   inset: 0;
@@ -271,6 +293,11 @@ html, body {
   z-index: 1;
 }
 
+.file-input::-webkit-file-upload-button {
+  display: none;
+}
+
+/* Content Styles */
 .upload-content,
 .view-content {
   height: 100%;
@@ -319,46 +346,80 @@ html, body {
   color: white;
 }
 
+.status-message.info {
+  background-color: #4299e1;
+  color: white;
+}
+
 .file-count {
   margin-top: 1rem;
   color: #4a5568;
   font-size: 0.9rem;
 }
 
-@media (max-width: 768px) {
-  .upload-view-section {
-    grid-template-columns: 1fr;
-  }
-
-  .tasks-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .task-selection-header h1 {
-    font-size: 2rem;
-  }
+/* Upload Buttons Container */
+.upload-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
 }
 
-.upload-section,
-.view-section {
-  background-color: white;
-  border-radius: 16px;
-  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); */
-  height: 250px;
-  transition: all 0.3s ease;
+/* Individual Upload Button */
+.upload-button {
+  width: 100%;
+  min-width: 200px;
+  max-width: 300px;
+  aspect-ratio: 16 / 10;
   position: relative;
-  overflow: hidden;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
   cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.upload-section.drag-active {
-  border: 2px dashed #4299e1;
-  background-color: #ebf8ff;
+.upload-button:hover {
+  transform: translateY(-4px);
+  border-color: #0066cc;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
 }
 
-.status-message.info {
-  background-color: #4299e1;
-  color: white;
+/* Hide File Input Text */
+.upload-button input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  color: transparent;
+}
+
+.upload-button input[type="file"]::-webkit-file-upload-button {
+  display: none;
+}
+
+/* Button Content */
+.upload-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  padding: 1.5rem;
+}
+
+.upload-button h3 {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0;
+}
+
+.upload-icon {
+  font-size: 2.5rem;
+  color: #0066cc;
+  margin-bottom: 1rem;
 }
 
 .upload-details {
@@ -367,33 +428,127 @@ html, body {
   opacity: 0.9;
 }
 
-/* Global Styles */
-* {
-  margin: 0;
-  padding: 0;
+/*=============================================
+=            7. Modals                       =
+=============================================*/
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  z-index: 1000;
+}
+
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 5px;
   box-sizing: border-box;
+  overflow: hidden;
+  max-width: 100vw;
+  max-height: 100vh;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  z-index: 1001;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  line-height: 1.6;
+.modal-image-container {
+  position: relative;
+  width: 100%;
+  height: auto;
+  /* height: calc(100vh - 150px); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* overflow: hidden; */
+}
+
+.modal-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.modal-controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Modal Buttons */
+.control-button,
+.save-button {
+  min-width: 120px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-button {
+  background-color: #2196F3;
+  color: white;
+}
+
+.add-button:hover {
+  background-color: #1976D2;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.add-button:active {
+  background-color: #1565C0;
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.save-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #45a049;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.save-button:active {
+  background-color: #388E3C;
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.modal-metadata {
+  width: 100%;
+  padding: 5px 10px;
+  text-align: left;
   color: #333;
+  font-size: 0.9rem;
 }
 
-h1,
-h2,
-h3 {
-  color: #333;
-  margin-bottom: 1rem;
-}
+/*=============================================
+=        8. Bounding Box                    =
+=============================================*/
 
-p {
-  color: #666;
-  margin-bottom: 1rem;
-}
-
-/* BoundingBox styles */
 .bounding-box {
   position: absolute;
   border: 2px solid #00ff00;
@@ -450,6 +605,7 @@ p {
   background-color: #cc0000;
 }
 
+/* Resize Handles */
 .resize-handle {
   position: absolute;
   width: 10px;
@@ -483,47 +639,36 @@ p {
   cursor: se-resize;
 }
 
-/* Collage styles */
-/* Collage styles */
+/*=============================================
+=            9. Collage                      =
+=============================================*/
+
+/* Collage Styles */
 .collage {
   display: flex;
   gap: 0.25rem;
-  padding: 0.25rem;
-  max-width: 1500px;
-  margin: 10px auto 0;
-  justify-content: flex-start;
-  /* Changed from center to flex-start */
-  flex-wrap: nowrap;
-  /* Changed from wrap to nowrap */
-  /* overflow-x: auto; */
-  /* Added horizontal scroll */
-  -webkit-overflow-scrolling: touch;
-  /* Smooth scrolling on iOS */
-  scrollbar-width: thin;
-  /* Firefox scrollbar */
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-  /* IE scrollbar */
-}
-
-/* Update collage width to match */
-.collage {
+  padding: 0 0.25rem;
   width: 100%;
   max-width: 1500px;
-  margin: 10px auto 0;
-  padding: 0 0.25rem;
+  margin: 10px auto 50px;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  scrollbar-width: thin; /* Firefox scrollbar */
+  -ms-overflow-style: -ms-autohiding-scrollbar; /* IE scrollbar */
 }
 
+/* Collage Columns */
 .collage-column {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  flex: 1 0 20%;
-  /* Changed to make each column exactly 20% width */
+  flex: 1 0 20%; /* Each column is 20% width */
   min-width: 200px;
   max-width: 400px;
 }
 
-/* Custom scrollbar styling for webkit browsers */
+/* Custom Scrollbar Styling for Webkit Browsers */
 .collage::-webkit-scrollbar {
   height: 8px;
 }
@@ -542,37 +687,7 @@ p {
   background: #555;
 }
 
-/* Remove the responsive breakpoints that were changing the layout */
-@media (max-width: 1200px) {
-  .collage-column {
-    min-width: 200px;
-    /* Maintain minimum width */
-  }
-}
-
-@media (max-width: 992px) {
-  .collage {
-    gap: 0.25rem;
-    /* Maintain consistent gap */
-    padding: 0.25rem;
-  }
-
-  .collage-column {
-    gap: 0.25rem;
-    min-width: 200px;
-    /* Maintain minimum width */
-  }
-}
-
-/* Remove the mobile breakpoint that was forcing 100% width */
-@media (max-width: 480px) {
-  .collage-column {
-    min-width: 200px;
-    /* Override the previous 100% width */
-    max-width: 400px;
-  }
-}
-
+/* Collage Images */
 .collage-image {
   width: 100%;
   height: auto;
@@ -587,140 +702,11 @@ p {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Additional Global Styles */
-.container {
-  position: relative;
-  max-width: 1500px;
-  margin: 0 auto;
-  padding: 1rem;
-}
+/*=============================================
+=        10. Navigation Bar & Filters        =
+=============================================*/
 
-.image-container {
-  position: relative;
-  display: inline-block;
-  max-width: 100%;
-}
-
-.image-container img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: auto;
-  z-index: 1000;
-}
-
-.modal-content {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  background-color: #fff;
-  border-radius: 5px;
-  padding: 5px;
-  box-sizing: border-box;
-  overflow: hidden;
-  max-width: 90vw;
-  max-height: 90vh;
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  z-index: 1001;
-}
-
-.modal-image-container {
-  position: relative;
-  width: 100%;
-  height: calc(90vh - 150px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-.modal-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  pointer-events: none;
-}
-
-.modal-controls {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.control-button,
-.save-button {
-  min-width: 120px;
-  padding: 8px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  text-align: center;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.add-button {
-  background-color: #2196F3;
-  color: white;
-}
-
-.add-button:hover {
-  background-color: #1976D2;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.add-button:active {
-  background-color: #1565C0;
-  transform: translateY(1px);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.save-button {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.save-button:hover {
-  background-color: #45a049;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.save-button:active {
-  background-color: #388E3C;
-  transform: translateY(1px);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.modal-metadata {
-  width: 100%;
-  padding: 5px 10px;
-  text-align: left;
-  color: #333;
-  font-size: 0.9rem;
-}
-
-/* Navigation bar styles */
+/* Navigation Bar Styles */
 .navigation-bar {
   display: flex;
   align-items: flex-start;
@@ -762,22 +748,6 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-@media (max-width: 768px) {
-  .navigation-bar {
-    padding: 15px;
-  }
-
-  .navigation-container {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .filter-container {
-    flex: auto;
-  }
 }
 
 .filter-button:hover {
@@ -855,97 +825,4 @@ p {
   color: #999;
   font-style: italic;
   font-size: 14px;
-}
-
-/* Upload section - no animations */
-.upload-section {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  height: 300px;
-  padding: 2rem;
-  background: white;
-}
-
-/* Upload buttons container */
-.upload-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 3rem;
-}
-
-/* Individual upload button - with animations */
-.upload-button {
-  width: 250px;
-  height: 160px;
-  position: relative;
-  background: white;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.upload-button:hover {
-  transform: translateY(-4px);
-  border-color: #0066cc;
-  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
-}
-
-/* Hide file input text */
-.upload-button input[type="file"] {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-  color: transparent;
-}
-
-.upload-button input[type="file"]::-webkit-file-upload-button {
-  display: none;
-}
-
-/* Button content */
-.upload-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  padding: 1.5rem;
-}
-
-.upload-icon {
-  font-size: 2.5rem;
-  color: #0066cc;
-  margin-bottom: 1rem;
-}
-
-.upload-button h3 {
-  font-size: 1.1rem;
-  color: #333;
-  margin: 0;
-}
-
-/* Status message */
-.status-message {
-  margin-top: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  text-align: center;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.status-message.upload-success {
-  background: #48bb78;
-  color: white;
-}
-
-.status-message.upload-error {
-  background: #f56565;
-  color: white;
 }

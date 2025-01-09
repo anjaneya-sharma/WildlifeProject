@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import BoundingBox from './BoundingBox';
 import './styles.css';
+import { fetchProcessedImages, postAnnotations, getRawImageUrl } from '../api/imageApi.js';
+import { logError } from '../utils/error.js';
 
-const Modal = ({ selectedImage, handleCloseModal, classList }) => { // Ensure classList is passed correctly
+const Modal = ({ selectedImage, handleCloseModal, classList }) => {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const [boxes, setBoxes] = useState([]);
   const imageRef = useRef(null);
@@ -13,40 +15,34 @@ const Modal = ({ selectedImage, handleCloseModal, classList }) => { // Ensure cl
 
   useEffect(() => {
     if (!selectedImage) {
-      console.error('Error: selectedImage is undefined');
+      logError('Error: selectedImage is undefined');
       return;
     }
 
-    // Fetch existing boxes when image loads
     const fetchBoxes = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/processed-images/${selectedImage}`);
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Fetched data:', data);
+        const data = await fetchProcessedImages(selectedImage);
+        console.log('Fetched data:', data);
 
-          if (data.metadata) {
-            const annotations = Object.values(data.metadata).map((detection, index) => ({
-              id: index,
-              detection_id: index,  // Incorrect assignment
-              x: detection.x - detection.width / 2,
-              y: detection.y - detection.height / 2,
-              width: detection.width,
-              height: detection.height,
-              category: detection.name,
-            }));
-            setBoxes(annotations);
-            if (annotations.length > 0) {
-              nextIdRef.current = Math.max(...annotations.map(b => b.id)) + 1;
-            }
-          } else {
-            console.error('Error: Unexpected response structure', data);
+        if (data.metadata) {
+          const annotations = Object.values(data.metadata).map((detection, index) => ({
+            id: index,
+            detection_id: detection.id || index,
+            x: detection.x,
+            y: detection.y,
+            width: detection.width,
+            height: detection.height,
+            category: detection.name,
+          }));
+          setBoxes(annotations);
+          if (annotations.length > 0) {
+            nextIdRef.current = Math.max(...annotations.map(b => b.id)) + 1;
           }
         } else {
-          console.error('Error fetching boxes:', response.statusText);
+          logError('Error: Unexpected response structure', data);
         }
       } catch (error) {
-        console.error('Error fetching boxes:', error);
+        logError('Error fetching boxes:', error);
       }
     };
 
@@ -55,7 +51,7 @@ const Modal = ({ selectedImage, handleCloseModal, classList }) => { // Ensure cl
 
   useEffect(() => {
     if (!selectedImage) {
-      console.error('Error: selectedImage is undefined');
+      logError('Error: selectedImage is undefined');
       return;
     }
 
@@ -66,9 +62,9 @@ const Modal = ({ selectedImage, handleCloseModal, classList }) => { // Ensure cl
       }
     };
 
-    const img = new Image();
-    img.src = `http://127.0.0.1:8000/raw-images/${selectedImage}`;
-    img.onload = updateImageSize;
+    const loadingImage = new Image();
+    loadingImage.src = getRawImageUrl(selectedImage);
+    loadingImage.onload = updateImageSize;
 
     window.addEventListener('resize', updateImageSize);
     return () => window.removeEventListener('resize', updateImageSize);
@@ -108,43 +104,35 @@ const Modal = ({ selectedImage, handleCloseModal, classList }) => { // Ensure cl
 
   const handleSave = useCallback(() => {
     console.log("handleSave function called");
-  
+
     if (!selectedImage) {
-      console.error('handleSave Error: selectedImage is undefined');
+      logError('handleSave Error: selectedImage is undefined');
       return;
     }
-    
+
     console.log("Boxes before mapping:", boxes);
-  
-    // Convert boxes to corrections format
+
     const corrections = boxes.map(box => ({
-      detection_id: box.id >= 0 ? box.id : null,  // Incorrect mapping
-      x: box.x + box.width / 2,  // Convert to center coordinates
-      y: box.y + box.height / 2, // Convert to center coordinates
+      detection_id: box.detection_id !== null ? box.detection_id : null,
+      x: box.x,
+      y: box.y,
       width: box.width,
       height: box.height,
-      label: box.category,    // Ensure label matches backend class names
+      label: box.category,
     }));
-  
+
     console.log('Sending corrections:', corrections);
-    fetch(`http://127.0.0.1:8000/annotations/${selectedImage}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(corrections)  // Send as a JSON array
-    })
+    
+    postAnnotations(selectedImage, corrections)
       .then(response => {
         if (response.status === 204) {
           console.log('Success: Annotations updated');
         } else {
-          return response.json().then(result => {
-            console.error('Error:', result);
-          });
+          logError('Error:', response.data);
         }
       })
       .catch(error => {
-        console.error('Error:', error);
+        logError('Error:', error);
       });
   }, [boxes, selectedImage]);
 
@@ -172,7 +160,7 @@ const Modal = ({ selectedImage, handleCloseModal, classList }) => { // Ensure cl
           {selectedImage ? (
             <img
               ref={imageRef}
-              src={`http://127.0.0.1:8000/raw-images/${selectedImage}`}
+              src={getRawImageUrl(selectedImage)}
               alt={`ID: ${selectedImage}`}
               onLoad={() => {
                 if (imageRef.current) {
@@ -184,7 +172,7 @@ const Modal = ({ selectedImage, handleCloseModal, classList }) => { // Ensure cl
               onDragStart={(e) => e.preventDefault()}
             />
           ) : (
-            console.error('Error: selectedImage is undefined')
+            logError('Error: selectedImage is undefined')
           )}
 
           {imageSize.width > 0 && imageSize.height > 0 && boxes.map((box) => (
@@ -198,7 +186,7 @@ const Modal = ({ selectedImage, handleCloseModal, classList }) => { // Ensure cl
               onRemove={() => handleRemoveBox(box.id)}
               showRemoveButton={boxes.length > 1}
               setIsInteractingWithBoundingBox={setIsInteractingWithBoundingBox}
-              classList={classList} // Pass class list to BoundingBox
+              classList={classList}
             />
           ))}
         </div>

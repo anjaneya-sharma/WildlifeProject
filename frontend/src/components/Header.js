@@ -2,7 +2,7 @@ import React from 'react';
 import './styles.css';
 
 
-const logoPath = '/assets/static/AIWilD.webp';
+const logoPath = '/assets/static/AIWILD.webp';
 const iiitdLogoPath = '/assets/static/iiitd logo.webp';
 const wiiLogoPath = '/assets/static/WII Logo.webp';
 const ntcaLogoPath = '/assets/static/NTCA logo.webp';
