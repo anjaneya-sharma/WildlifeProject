@@ -25,7 +25,7 @@ cd WildlifeProject/backend
 pip install fastapi
 ```
 ```bash
-fastapi dev main.py
+python api_endpoints.py
 ```
 
 The backend server should now be running on `http://localhost:8000/docs`
