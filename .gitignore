@@ -1,16 +1,35 @@
 frontend/node_modules/
- 
 frontend/build/
-
-frontend/.DS_Store
- 
-frontend/.vscode/
-frontend/.idea/
- 
-frontend/*.log
- 
-frontend/.cache/
- 
 frontend/package-lock.json
+frontend/src/test
+backend/ObjectDetection/scripts/images
+backend/ObjectDetection/scripts/labels
+backend/ObjectDetection/logs_files
 
+# Data directories
+backend/ObjectDetection/YOLO/runs/detect
+processed/
+backend/ObjectDetection/YOLO/runs/train/wii_28_072/weights/best.pt
+backend/BirdCount/model_files/pth/original.pth
+backend/Dockerfile
+
+# Python
+__pycache__/
+
+# Node
+node_modules/
+# .env
+# .env.local
+
+# IDE/Editor
+.idea/
+.vscode/
+.DS_Store
+
+# Project specific
+backend/log_files/
+backend/YOLO/__pycache__
+backend/annotations/
+backend/uploads/
 backend/__pycache__/
+frontend/build/
