@@ -9,7 +9,7 @@ Choose **one** of the following installation methods:
 ## Local
 ### Clone the Repository
 ```bash
-git clone https://github.com/Am3-y/WildlifeProject.git
+git clone https://github.com/anjaneya-sharma/WildlifeProject.git
 ```
 
 ### Backend Setup
