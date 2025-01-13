@@ -68,21 +68,12 @@ docker pull awe35/backend:latest
 docker pull awe35/frontend:latest
 ```
 
-2. Run with docker run:
-    * Run the PostgreSQL Container:
-    ```bash
-    docker run -d --name wildlifeproject-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=admin -e POSTGRES_DB=wildlife_monitoring -p 5432:5432 -v db-data:/var/lib/postgresql/data postgres:13
-    ```
-    * Run the Backend Container:
-    ```bash
-    docker run -d --name wildlifeproject-backend --link wildlifeproject-db:db -e DB_HOST=db -e DB_PORT=5432 -e DB_USER=postgres -e DB_PASSWORD=admin -e DB_NAME=wildlife_monitoring -p 8000:8000 awe35/backend:latest
-    ```
-    * Run the Frontend Container:
-    ```bash
-    docker run -d --name wildlifeproject-frontend --link wildlifeproject-backend:backend -e REACT_APP_API_URL=http://localhost:8000 -p 3000:3000 awe35/frontend:latest
-    ```
+2. Run with docker compose:
+```bash
+docker-compose up -d
+```
 
-4. Access the Application:
+3. Access the Application:
 * Frontend: http://localhost:3000
 * Backend API: http://localhost:8000/docs
 

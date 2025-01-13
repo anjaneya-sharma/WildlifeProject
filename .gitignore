@@ -13,6 +13,7 @@ backend/ObjectDetection/YOLO/runs/train/wii_28_072/weights/best.pt
 backend/BirdCount/model_files/pth/original.pth
 backend/requirements_updated.txt
 update_requirements.py
+personal.md
 
 # Python
 __pycache__/
