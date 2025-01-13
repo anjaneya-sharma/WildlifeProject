@@ -1,0 +1,40 @@
+version: '3'
+services:
+  backend:
+    # build: ./backend # uncomment this line if you want to build the image from the Dockerfile
+    image: awe35/backend:latest
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    depends_on:
+      - db
+  frontend:
+    # build: ./frontend # uncomment this line if you want to build the image from the Dockerfile
+    image: awe35/frontend:latest
+    env_file:
+      - ./frontend/.env.local
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: wildlife_monitoring
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:

@@ -819,23 +819,6 @@ p {
   font-weight: 500;
 }
 
-.no-results {
-  padding: 15px;
-  text-align: center;
-  color: #999;
-  font-style: italic;
-  font-size: 14px;
-}
-
-.fallback-image {
-  width: 100%;
-  max-width: 1500px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  object-fit: contain;
-}
-
 .controls-container {
   display: flex;
   align-items: center;
@@ -865,4 +848,71 @@ p {
 
 .download-button:hover {
   background-color: #0052a3;
+}
+
+
+/*=============================================
+=           11. Notifications                =
+============================================= */
+
+.notification {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  color: white;
+  font-weight: 600;
+  opacity: 0;
+  animation: fadeInOut 3s forwards;
+  z-index: 1005;
+}
+
+.success {
+  background-color: #48bb78;
+}
+
+.error {
+  background-color: #f56565;
+}
+
+@keyframes fadeInOut {
+  0% {
+    top: -60px;
+    opacity: 0;
+  }
+  10% {
+    top: 20px;
+    opacity: 1;
+  }
+  90% {
+    top: 20px;
+    opacity: 1;
+  }
+  100% {
+    top: -60px;
+    opacity: 0;
+  }
+}
+
+/*=============================================
+=        12. Fallbacks & Empty States        =
+=============================================*/
+
+.no-results {
+  padding: 15px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  font-size: 14px;
+}
+
+.fallback-image {
+  width: 100%;
+  max-width: 1500px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
 }

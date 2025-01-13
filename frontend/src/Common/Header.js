@@ -2,10 +2,10 @@ import React from 'react';
 // import '../Object Detection/components/styles.css';
 import styles from '../ObjectDetection/components/styles.module.css';
 
-const logoPath = '/assets/static/AIWILD.webp';
-const iiitdLogoPath = '/assets/static/iiitd logo.webp';
-const wiiLogoPath = '/assets/static/WII Logo.webp';
-const ntcaLogoPath = '/assets/static/NTCA logo.webp';
+const logoPath = '/assets/static/aiwild.webp';
+const iiitdLogoPath = '/assets/static/iiitd_logo.webp';
+const wiiLogoPath = '/assets/static/wii_logo.webp';
+const ntcaLogoPath = '/assets/static/ntca_logo.webp';
 
 const Header = () => {
   return (
@@ -15,7 +15,7 @@ const Header = () => {
         <nav className={styles["nav-links"]}>
           <a href="/" className={styles["nav-link"]}>Home</a>
           <a href="#" className={styles["nav-link"]}>Team</a>
-          <a href="mailto:anands@iiitd.ac.in" className={styles["nav-link"]}>Contact Us</a>
+          <a href="mailto:ameya21447@iiitd.ac.in" className={styles["nav-link"]}>Contact Us</a>
         </nav>
         <div className={styles["logo-group"]}>
           <img src={ntcaLogoPath} alt="NTCA Logo" className={styles["small-logo"]} />

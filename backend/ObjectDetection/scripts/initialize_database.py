@@ -164,14 +164,14 @@ def initialize_database():
         db_exists = cursor.fetchone() is not None
         
         if db_exists and not check_schema_match():
-            print("\nWarning: Database exists with different schema")
-            print("Press Enter 3 times to drop and recreate...")
+            # print("\nWarning: Database exists with different schema")
+            # print("Press Enter 3 times to drop and recreate...")
             
-            for _ in range(3):
-                if input() != "":
-                    print("Operation cancelled")
-                    return False
-                time.sleep(0.5)
+            # for _ in range(3):
+            #     if input() != "":
+            #         print("Operation cancelled")
+            #         return False
+            #     time.sleep(0.5)
                 
             return drop_database() and create_database() and create_tables()
                 

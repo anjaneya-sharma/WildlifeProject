@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import BoundingBox from './BoundingBox';
-// import './styles.css';
-import styles from './styles.module.css'
+import styles from './styles.module.css';
 import { getImageBoxes, saveImageBoxes, getImageUrl } from '../api/imageApi.js';
 import { logError } from '../utils/error.js';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Modal = ({ selectedImage, handleCloseModal, classList }) => {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const [boxes, setBoxes] = useState([]);
+
   const imageRef = useRef(null);
   const modalRef = useRef(null);
   const modalBackgroundRef = useRef(null);
@@ -26,6 +28,7 @@ const Modal = ({ selectedImage, handleCloseModal, classList }) => {
         }
       } catch (error) {
         logError('Error fetching boxes:', error);
+        toast.error('Error fetching boxes.');
       }
     };
   
@@ -121,9 +124,10 @@ const Modal = ({ selectedImage, handleCloseModal, classList }) => {
   
     try {
       await saveImageBoxes(selectedImage, boxData);
-      // handleCloseModal();
+      toast.success('Changes saved successfully!');
     } catch (error) {
       logError('Error saving annotations:', error);
+      toast.error('Failed to save changes.');
     }
   }, [selectedImage, boxes, handleCloseModal, filteredClassList]);
 
@@ -133,8 +137,33 @@ const Modal = ({ selectedImage, handleCloseModal, classList }) => {
     }
   };
 
+  useEffect(() => {
+    const handleEscapeKey = (event) => {
+      if (event.key === 'Escape') {
+        handleCloseModal();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKey);
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [handleCloseModal]);
+
   return (
-    <div className={styles["modal"]} ref={modalBackgroundRef} onClick={handleClickOutside}>
+    <div className={styles.modal} ref={modalBackgroundRef} onClick={handleClickOutside}>
+      <ToastContainer 
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className={styles["modal-content"]} onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
