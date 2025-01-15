@@ -69,7 +69,7 @@ function ObjectDetection({ uploadedImageIds }) {
 
     try {
       const link = document.createElement('a');
-      link.href = `${process.env.REACT_APP_API_BASE_URL}/images/ObjectDetection/download-all/`;
+      link.href = `${process.env.REACT_APP_API_BASE_URL}/images/ObjectDetection/download-all`;
       link.download = 'annotated-images.zip';
       document.body.appendChild(link);
       link.click();
@@ -101,7 +101,7 @@ function ObjectDetection({ uploadedImageIds }) {
         </div>
         {images.length === 0 ? (
           <img
-            src="/assets/fallback.png"
+            src="https://placehold.co/600x400?text=No+Images+Available&color=cccccc&text-color=666666&font=roboto"
             alt="No images available"
             className={styles["fallback-image"]}
           />

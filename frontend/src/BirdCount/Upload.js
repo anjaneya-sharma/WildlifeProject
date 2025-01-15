@@ -30,7 +30,7 @@ function Upload() {
     try {
       
       // Send image to FastAPI endpoint
-      const resultImageResponse = await fetch('http://localhost:8000/model_heatmap/', {
+      const resultImageResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/model_heatmap/`, {
         method: 'POST',
         body: formData,
         credentials: 'same-origin',
@@ -69,7 +69,7 @@ function Upload() {
 
 const fetchImageId = async (formData) => {
   try {
-    const response = await fetch('http://localhost:8000/images/BirdCount/', {
+    const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/images/BirdCount/`, {
       method: 'POST',
       body: formData,
       credentials: 'same-origin',
@@ -93,7 +93,7 @@ const fetchImageId = async (formData) => {
 const fetchModelCount = async (formData) => {
   
   try {
-    const response = await fetch('http://localhost:8000/model_count/', {
+    const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/model_count/`, {
       method: 'POST',
       body: formData,
       credentials: 'same-origin',
@@ -122,7 +122,7 @@ const fetchModelCount = async (formData) => {
   // Fetch model array from API
 const fetchModelArray = async (formData) => {
   try {
-    const response = await fetch('http://localhost:8000/model_gridmap/', {
+    const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/model_gridmap/`, {
       method: 'POST',
       body: formData,
       credentials: 'same-origin',

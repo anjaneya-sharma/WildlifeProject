@@ -9,7 +9,7 @@ export const uploadImages = async (files) => {
 
   try {
     console.log('Axios Base URL:', axiosInstance.defaults.baseURL);
-    const response = await axiosInstance.post('/images/ObjectDetection/', formData, {
+    const response = await axiosInstance.post('/images/ObjectDetection', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }

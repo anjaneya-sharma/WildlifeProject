@@ -26,7 +26,7 @@ function Annotate() {
       const formData = new FormData();
       formData.append('file', file);
 
-      fetch('http://127.0.0.1:8000/model_cluster/', {
+      fetch(`${process.env.REACT_APP_API_BASE_URL}/model_cluster/`, {
         method: 'POST',
         body: formData,
       })
@@ -59,7 +59,7 @@ function Annotate() {
     console.log(userid);
     console.log(id);
     try {
-      const response = await fetch(`http://localhost:8000/images/BirdCount/${id}/${userid}/annotations`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/images/BirdCount/${id}/${userid}/annotations`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -2,13 +2,13 @@ import axiosInstance from './api.js';
 import { handleImageApiError, handleRawImageError } from '../utils/error.js';
 
 export const getImageUrl = (imageId) => 
-  `${process.env.REACT_APP_API_BASE_URL}/images/ObjectDetection/?image_id=${imageId}`;
+  `${process.env.REACT_APP_API_BASE_URL}/images/ObjectDetection?image_id=${imageId}`;
 
 export const getImages = async (classId = 'All') => {
   try {
     const url = classId === 'All' 
-      ? '/images/ObjectDetection/'
-      : `/images/ObjectDetection/?class_id=${parseInt(classId, 10)}`;
+      ? '/images/ObjectDetection'
+      : `/images/ObjectDetection?class_id=${parseInt(classId, 10)}`;
 
     console.log('Fetching images from:', url);
     const response = await axiosInstance.get(url);

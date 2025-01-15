@@ -12,7 +12,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/gallery" element={<Gallery />} />
+        {/* <Route path="/gallery" element={<Gallery />} /> */}
         <Route path="/landingpage" element={<LandingPage />} />
         <Route path="/upload" element={<Upload />} />
         <Route path="/annotate" element={<Annotate />} />

@@ -1,7 +1,7 @@
 services:
   backend:
     container_name: backend
-    build: ./backend # uncomment this line if you want to build the image from the Dockerfile
+    # build: ./backend # uncomment this line if you want to build the image from the Dockerfile
     image: awe35/backend:latest
     env_file:
       - ./backend/.env
@@ -17,10 +17,12 @@ services:
     depends_on:
       - db
   frontend:
-    build: ./frontend # uncomment this line if you want to build the image from the Dockerfile
+    # build: ./frontend # uncomment this line if you want to build the image from the Dockerfile
     image: awe35/frontend:latest
     env_file:
       - ./frontend/.env.local
+    environment:
+      - REACT_APP_API_BASE_URL=http://backend:8000/
     ports:
       - "3000:3000"
     depends_on:
