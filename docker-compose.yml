@@ -1,7 +1,7 @@
-version: '3'
 services:
   backend:
-    # build: ./backend # uncomment this line if you want to build the image from the Dockerfile
+    container_name: backend
+    build: ./backend # uncomment this line if you want to build the image from the Dockerfile
     image: awe35/backend:latest
     env_file:
       - ./backend/.env
@@ -17,7 +17,7 @@ services:
     depends_on:
       - db
   frontend:
-    # build: ./frontend # uncomment this line if you want to build the image from the Dockerfile
+    build: ./frontend # uncomment this line if you want to build the image from the Dockerfile
     image: awe35/frontend:latest
     env_file:
       - ./frontend/.env.local
