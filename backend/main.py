@@ -22,6 +22,8 @@ from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.responses import FileResponse, JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
+
 
 from ObjectDetection.scripts.initialize_database import initialize_database
 from ObjectDetection.scripts.inference import load_model, run_inference
@@ -48,22 +50,57 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 app = FastAPI()
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
+# origins = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+#     "http://192.168.1.3:3000",
+# ]
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,             # Specify allowed origins
+#     allow_credentials=True,            # Enable credentials (cookies)
+#     allow_methods=["*"],               # Allow all HTTP methods
+#     allow_headers=["*"],               # Allow all headers
+#     expose_headers=["*"],              # Expose all headers to the client
+# )
+
+class CustomCORSMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = Response("Internal server error", status_code=500)
+        
+        try:
+            # Handle preflight (OPTIONS) requests
+            if request.method == "OPTIONS":
+                response = Response(status_code=200)
+            else:
+                response = await call_next(request)
+        except Exception as e:
+            response = JSONResponse({"detail": "Internal server error"}, status_code=500)
+        
+        origin = request.headers.get('origin')
+        if origin:
+            response.headers['Access-Control-Allow-Origin'] = origin
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+            response.headers['Vary'] = 'Origin'  # Ensures caches differentiate based on Origin
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+            response.headers['Access-Control-Expose-Headers'] = '*'  # Adjust as needed
+        
+        return response
+
+# Add Custom CORS Middleware before SessionMiddleware
+app.add_middleware(CustomCORSMiddleware)
+
+
 app.add_middleware(
     SessionMiddleware,
     secret_key=secrets.token_urlsafe(32),
     session_cookie="wildlife_session",
     max_age=7200,
-    https_only=False
+    https_only=False,
+    same_site="lax"
 )
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
-
 
 async def get_user_id(request: Request):
     if "user_id" not in request.session:
@@ -76,8 +113,8 @@ async def get_user_id(request: Request):
                     request.session["user_id"] = user_id
                     logger.debug(f"Created new user_id: {user_id}")
         except Exception as e:
-            logger.error(f"Database error creating user: {e}")
-            raise HTTPException(status_code=500, detail="Error creating user session")
+            logger.error(f"Error creating user_id: {e}")
+            raise HTTPException(status_code=500, detail="Internal Server Error")
     return request.session["user_id"]
 
 
@@ -96,7 +133,7 @@ async def startup_event():
         raise RuntimeError("Could not initialize application")
 
 
-@app.get("/images/ObjectDetection/")
+@app.get("/images/ObjectDetection")
 async def get_images(request: Request, class_id: Optional[int] = None, image_id: Optional[int] = None):
     user_id = await get_user_id(request)
     try:
@@ -153,7 +190,7 @@ async def get_boxes(request: Request, image_id: int):
         return {"error": str(e)}
 
 
-@app.post("/images/ObjectDetection/")
+@app.post("/images/ObjectDetection")
 async def upload_images(
     request: Request,
     files: List[UploadFile] = File(...)
@@ -210,7 +247,7 @@ async def upload_images(
         return {"error": str(e)}
 
 
-@app.post("/folders/ObjectDetection/")
+@app.post("/folders/ObjectDetection")
 async def upload_folder(request: Request, folder: UploadFile = File(...)):
     if not folder.filename.endswith('.zip'):
         raise HTTPException(status_code=400, detail="Only ZIP files are allowed")
